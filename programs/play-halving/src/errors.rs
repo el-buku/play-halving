@@ -8,4 +8,6 @@ pub enum ContractError {
     UserOverPurchase,
     #[msg("No tickets left, buy some more")]
     NoTicketsLeft,
+    #[msg("Not enough tokens for purchase")]
+    NotEnoughTokens,
 }

@@ -3,4 +3,4 @@ pub use init_program::*;
 
 pub mod bet;
 pub mod init_program;
-mod buy_tickets;
+pub mod buy_tickets;

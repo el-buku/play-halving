@@ -3,10 +3,11 @@ use anchor_lang::solana_program::vote::instruction;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{Mint, TokenAccount};
 
-use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX, TRANSFER_AUTHORITY};
+use crate::constants::seeds::{MILLISECOND_STATE, PROGRAM_CONFIG, SEEDS_PREFIX, TRANSFER_AUTHORITY, USER_STATE};
 use crate::state::{
-    BetSettings, MillisecondsBetsState, ProgramConfig, ProgramStatus, Timestamp, UserBetsState,
+    MillisecondsBetsState, ProgramConfig, UserBetsState,
 };
+use crate::state::program_config::{ProgramSettings, ProgramStatus, Timestamp};
 
 #[derive(Accounts)]
 #[instruction(timestamp_to_bet: Timestamp)]
@@ -19,7 +20,7 @@ pub struct Bet<'info> {
     SEEDS_PREFIX.as_bytes(),
     PROGRAM_CONFIG.as_bytes()
     ],
-    bump,
+    bump = program_config.program_config_bump,
     )]
     pub program_config: Account<'info, ProgramConfig>,
 
@@ -28,7 +29,8 @@ pub struct Bet<'info> {
     seeds = [
     SEEDS_PREFIX.as_bytes(),
     TRANSFER_AUTHORITY.as_bytes(),
-    ], bump)]
+    program_config.key().as_ref()
+    ], bump = program_config.transfer_authority_bump)]
     pub transfer_authority: UncheckedAccount<'info>,
 
     #[account(
@@ -41,6 +43,7 @@ pub struct Bet<'info> {
     #[account(
     init_if_needed,
     payer = buyer,
+    space = MillisecondsBetsState::INIT_SPACE,
     seeds = [
     SEEDS_PREFIX.as_bytes(),
     MILLISECOND_STATE.as_bytes(),
@@ -51,8 +54,6 @@ pub struct Bet<'info> {
     pub millisecond_state_acc: Account<'info, MillisecondsBetsState>,
 
     #[account(
-    init_if_needed,
-    payer = buyer,
     seeds = [
     SEEDS_PREFIX.as_bytes(),
     USER_STATE.as_bytes(),
@@ -81,7 +82,7 @@ impl<'info> Bet<'info> {
         //     ctx.accounts.betting_mint.key(),
         //     ctx.accounts.program_vault.key(),
         //     ctx.accounts.transfer_authority.key(),
-        //     BetSettings::default(),
+        //     ProgramSettings::default(),
         //     ctx.bumps.program_config,
         // );
         Ok(())

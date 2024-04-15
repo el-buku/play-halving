@@ -3,10 +3,10 @@ use anchor_lang::solana_program::vote::instruction;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{Mint, TokenAccount};
 
-use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX, TRANSFER_AUTHORITY};
+use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX, TRANSFER_AUTHORITY, USER_STATE};
+use crate::errors::ContractError;
 use crate::state::{
-    BetSettings, MillisecondsBetsState, ProgramConfig, ProgramStatus, UserBetsState,
-};
+    MillisecondsBetsState, ProgramConfig, ProgramSettings, ProgramStatus, UserBetsState};
 
 #[derive(Accounts)]
 #[instruction(num_tickets: u8)]
@@ -28,7 +28,8 @@ pub struct BuyTickets<'info> {
     seeds = [
     SEEDS_PREFIX.as_bytes(),
     TRANSFER_AUTHORITY.as_bytes(),
-    ], bump)]
+    program_config.key().as_ref()
+    ], bump = program_config.transfer_authority_bump)]
     pub transfer_authority: UncheckedAccount<'info>,
 
     #[account(
@@ -51,6 +52,7 @@ pub struct BuyTickets<'info> {
 
     #[account(
     init_if_needed,
+    space = UserBetsState::INIT_SPACE,
     payer = buyer,
     seeds = [
     SEEDS_PREFIX.as_bytes(),
@@ -67,7 +69,20 @@ pub struct BuyTickets<'info> {
 }
 
 impl<'info> BuyTickets<'info> {
-    pub fn execute(ctx: Context<Self>) -> Result<()> {
+    pub fn execute(ctx: Context<Self>, num_tickets: u8) -> Result<()> {
+        let buyer = &ctx.accounts.buyer;
+        let mint = &ctx.accounts.betting_mint;
+        let buyer_ata = &ctx.accounts.buyer_ata;
+        let program_config = &ctx.accounts.program_config;
+        let program_settings = program_config.settings;
+        let tickets_price =
+            num_tickets as u64 *
+                program_settings.bet_fee *
+                10_u64.pow(mint.decimals as u32);
+        
+        require_gte!(buyer_ata.amount, tickets_price, ContractError::NotEnoughTokens);
+        msg!("Begin transfer");
+
         // let clock = Clock::get().unwrap();
 
         // let admin = &ctx.accounts.admin;
@@ -78,7 +93,7 @@ impl<'info> BuyTickets<'info> {
         //     ctx.accounts.betting_mint.key(),
         //     ctx.accounts.program_vault.key(),
         //     ctx.accounts.transfer_authority.key(),
-        //     BetSettings::default(),
+        //     ProgramSettings::default(),
         //     ctx.bumps.program_config,
         // );
         Ok(())
