@@ -8,7 +8,10 @@ import React from "react";
 
 //@ts-ignore
 import appHtml from "./homepage.html";
+import {Homepage} from "@/components/homepage";
+
+
 
 export default function Home() {
-  return <html dangerouslySetInnerHTML={{ __html: appHtml }}></html>;
+  return <Homepage />;
 }
