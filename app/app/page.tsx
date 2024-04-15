@@ -4,118 +4,205 @@ import {
   WalletMultiButtonDynamic,
 } from "@/components/wallet-multi-button";
 
+import React from "react";
+//@ts-ignore
+import HTMLRenderer from "react-html-renderer";
+
+const slobozStr = `<div class="guess-container">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:ital,wght@0,100;0,300;0,400;0,500;1,100&family=Press+Start+2P&family=Source+Code+Pro:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+
+<div class="prog-cnt">
+    <div class="container">
+        <div class="slidecontainer">
+            <input type="range" min="1" max="100" value="50" style="position: relative" class="slider" id="myRange">
+            <div class="tool" id="tooltip" style="display: none;">
+                <span id="demo">50</span>Minimum tickets Left To Execute The Draw</div>
+        </div>
+    </div>
+</div>
+<div class="guess">
+    <div class="container">
+        <div class="guess-title">
+            Guess The Exact Date And Time For Bitcoin Halving And Win <span style="color: #ff8c00;">100,000</span> USDT
+        </div>
+        <div class="flex-btc">
+            <div class="btc-1"><img src="img/BTC1.png" alt=""></div>
+            <div class="btc-2"><img src="img/BTC2.png" alt=""></div>
+            <div class="btc-4"><img src="img/BTC4.png" alt=""></div>
+            <div class="btc-5"><img src="img/BTC5.png" alt=""></div>
+            <div class="stone-2"><img src="img/stone2.png" alt=""></div>
+            <div class="stone-3"><img src="img/stone3.png" alt=""></div>
+            <div class="hammer"><img src="img/hammer.png" alt=""></div>
+            <img class="btc-img" src="img/big.png" alt="Mining bitcoins image for casino lottery.">
+        </div>
+        <div class="mobile-btc d-none"><img src="img/bitcoins.png" alt=""></div>
+        <div class="count-down-card">
+            <div class="count-down-first-section">
+                <div class="you-have">
+                    You have <span class="blue-bbl">12 Chance</span> Of <span class="purple-bets">15 Bets</span>
+                </div>
+                <div class="guess-number">
+                    <div class="count-down">
+                        <input type="number" placeholder="?">
+                        <span class="month">Months</span>
+                    </div>
+                    <div class="count-down">
+                        <input type="number" placeholder="?">
+                        <span class="month">Days</span>
+                    </div>
+                    <div class="count-down">
+                        <input type="number" placeholder="?">
+                        <span class="month">Hours</span>
+                    </div>
+                    <div class="count-down">
+                        <input type="number" placeholder="?">
+                        <span class="month">Minutes</span>
+                        <img src="img/20.png" alt="Get 20% back">
+                    </div>
+                    <div class="count-down">
+                        <input type="number" placeholder="?">
+                        <span class="month">Seconds</span>
+                        <img src="img/50.png" alt="Get 50% back">
+                    </div>
+                    <div class="count-down">
+                        <input type="number" placeholder="?">
+                        <span class="month">M.Secs</span>
+                        <img style="right: 0;" src="img/usdt.png" alt="Get big prize 100k USDT">
+                    </div>
+                </div>
+            </div>
+            <div class="count-down-last-section">
+                <button class="green-ticket">Get 1 Ticket For 5.00 USDT</button>
+                <div class="flex-purple-tickets">
+                    <div class="purple-ticket">
+                        <img src="img/purple-tiket.png" alt="">
+                        <span>Buy 2 tickets</span>
+                    </div>
+                    <div class="purple-ticket">
+                        <img src="img/purple-tiket.png" alt="">
+                        <span>Buy 5 tickets</span>
+                    </div>
+                    <div class="purple-ticket">
+                        <img src="img/purple-tiket.png" alt="">
+                        <span>Buy 10 tickets</span>
+                    </div>
+                    <div class="purple-ticket">
+                        <img src="img/purple-tiket.png" alt="">
+                        <span>Buy 15 tickets</span>
+                    </div>
+                </div>
+                <div class="last-info">
+                    <img src="img/fi-rr-info.svg" alt="">
+                    <span class="last-purple-text">For Each 5 played tickets accquired you will receive 3 extra bets for free</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="game">
+    <div class="container">
+        <div class="game-rules">
+            <img src="img/crushed-btc.png" alt="Bitcoin">
+            <div class="flex-game">
+                <div class="game-title">Game Rules</div>
+                <div class="note">Please note: Each entry is represented by a unique NFT, which you can claim</div>
+            </div>
+        </div>
+        <div class="prizes">
+            <div class="first-frame">
+                <img src="img/thron.png" alt="">
+                <span>Win 1000,000 USDT by precisely predicting
+                the exact date and time, down to the millisecond, of the upcoming
+                Bitcoin halving!</span>
+            </div>
+            <div class="second-frame">
+                <img src="img/trophy.png" alt="">
+                <span>The moment the Bitcoin halving occurs, we’ll determine the winner based on who made the earliest correct prediction.</span>
+            </div>
+            <div class="third-frame">
+                <img style="top: -50px; max-width: 60px;" src="img/hand.png" alt="">
+                <span>If you correctly predict the date, hour, minute, and second, you’ll be rewarded with a refund of 50% of the ticket’s value in USDT.</span>
+            </div>
+            <div class="fourth-frame">
+                <img style="top: -35px; max-width: 160px;" src="img/blue-ticket.png" alt="">
+                <span>Guessing the correct date, hour, and minute earns you 25% of the ticket’s value back.</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="live">
+    <div class="container">
+        <div class="live-frame">
+            <div class="live-banner">
+                <div class="live-stats">Live Stats</div>
+                <img style="max-width: 80px;" src="img/live.png" alt="Live rec img">
+            </div>
+            <img style="max-width: 317px;" src="img/diamonds-btc.png" alt="">
+        </div>
+        <div style="overflow-x:auto;">
+            <table class="w-100">
+                <thead>
+                <tr>
+                    <th>Wallet Address</th>
+                    <th>Bet Time</th>
+                    <th>Ticket No (TX)</th>
+                    <th>Ticket Owned</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>1Kf28gYz9WUzvxE8H7XVb3s6iZpN2q5coA</td>
+                    <td>12th Apr, 2024 at 6:22 PM</td>
+                    <td>TX12265489965479</td>
+                    <td style="display: flex; justify-content: center;">
+                        <div class="white-pill">
+                            <img src="img/purple-tiket.png" alt="">
+                            <span>10</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>1Kf28gYz9WUzvxE8H7XVb3s6iZpN2q5coA</td>
+                    <td>12th Apr, 2024 at 6:22 PM</td>
+                    <td>TX12265489965479</td>
+                    <td style="display: flex; justify-content: center;">
+                        <div class="white-pill">
+                            <img src="img/purple-tiket.png" alt="">
+                            <span>10</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>1Kf28gYz9WUzvxE8H7XVb3s6iZpN2q5coA</td>
+                    <td>12th Apr, 2024 at 6:22 PM</td>
+                    <td>TX12265489965479</td>
+                    <td style="display: flex; justify-content: center;">
+                        <div class="white-pill">
+                            <img src="img/purple-tiket.png" alt="">
+                            <span>10</span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="footer-purple">
+        <div class="text-footer">DISCLIMER:<br>As the Bitcoin having will not return the millisecond of
+            the halving this will be randomly extracted</div>
+        <img style="max-width: 170px; border-radius: 0 24px 24px 0;" src="img/footer-bitcoin.png" alt="Bitcoin mining">
+    </div>
+</div>
+</div>`;
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-        <div className="mt-3 flex gap-8">
-          <WalletMultiButtonDynamic />
-          <WalletDisconnectButtonDynamic />
-        </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+  return <body dangerouslySetInnerHTML={{ __html: slobozStr }}></body>;
 }
