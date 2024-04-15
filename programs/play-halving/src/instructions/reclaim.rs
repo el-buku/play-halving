@@ -3,9 +3,9 @@ use anchor_lang::solana_program::vote::instruction;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{Mint, Token, TokenAccount};
 
-use crate::constants::seeds::{MILLISECOND_STATE, PROGRAM_CONFIG, SEEDS_PREFIX, TRANSFER_AUTHORITY, USER_STATE};
+use crate::constants::seeds::{PROGRAM_CONFIG, SECOND_STATE, SEEDS_PREFIX, TRANSFER_AUTHORITY, USER_STATE};
 use crate::errors::ContractError;
-use crate::state::{BetState, MillisecondsBetsState, program_config, ProgramConfig, UserBetsState};
+use crate::state::{BetState, program_config, ProgramConfig, SecondsBetsState, UserBetsState};
 use crate::state::program_config::{ProgramSettings, ProgramStatus};
 
 #[derive(Accounts)]
@@ -42,15 +42,15 @@ pub struct Reclaim<'info> {
     // #[account(
     // init_if_needed,
     // payer = buyer,
-    // space = MillisecondsBetsState::INIT_SPACE,
+    // space = SecondsBetsState::INIT_SPACE,
     // seeds = [
     // SEEDS_PREFIX.as_bytes(),
-    // MILLISECOND_STATE.as_bytes(),
+    // SECOND_STATE.as_bytes(),
     // timestamp_to_bet.to_le_bytes().as_ref(),
     // ],
     // bump
     // )]
-    // pub millisecond_state_acc: Account<'info, MillisecondsBetsState>,
+    // pub second_state_acc: Account<'info, SecondsBetsState>,
 
     #[account(
     seeds = [
@@ -101,7 +101,7 @@ impl<'info> Reclaim<'info> {
                         buyer_ata.to_account_info(),
                         program_config.to_account_info(),
                         ctx.accounts.token_program.to_account_info(),
-                        amount
+                        amount,
                     ).unwrap()
                 }
                 user_state.has_reclaimed = true;

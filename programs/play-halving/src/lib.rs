@@ -29,8 +29,8 @@ pub mod play_halving {
         PauseBetting::execute(ctx)
     }
 
-    pub fn mark_halving(ctx: Context<MarkHalvingTimestaml>, halving_timestamp: i64) -> Result<()> {
-        MarkHalvingTimestaml::execute(ctx, halving_timestamp)
+    pub fn mark_halving(ctx: Context<MarkHalvingTimestamp>, halving_timestamp: i64) -> Result<()> {
+        MarkHalvingTimestamp::execute(ctx, halving_timestamp)
     }
 
     // pub fn reclaim()

@@ -6,7 +6,7 @@ use crate::state::{BetState, ProgramConfig, ProgramStatus};
 
 #[derive(Accounts)]
 #[instruction(halving_timestamp: i64)]
-pub struct MarkHalvingTimestaml<'info> {
+pub struct MarkHalvingTimestamp<'info> {
     #[account(mut, address = program_config.admin @ ContractError::IllegalAdminAccess)]
     pub admin: Signer<'info>,
 
@@ -22,12 +22,9 @@ pub struct MarkHalvingTimestaml<'info> {
     pub system_program: Program<'info, System>,
 }
 
-impl<'info> MarkHalvingTimestaml<'info> {
+impl<'info> MarkHalvingTimestamp<'info> {
     pub fn execute(ctx: Context<Self>, halving_timestamp: i64) -> Result<()> {
         ctx.accounts.program_config.status = ProgramStatus::Done(halving_timestamp);
-        
-        
-        
         Ok(())
     }
 }

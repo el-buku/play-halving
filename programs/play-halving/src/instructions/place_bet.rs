@@ -3,9 +3,9 @@ use anchor_lang::solana_program::vote::instruction;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{Mint, TokenAccount};
 
-use crate::constants::seeds::{MILLISECOND_STATE, PROGRAM_CONFIG, SEEDS_PREFIX, TRANSFER_AUTHORITY, USER_STATE};
+use crate::constants::seeds::{PROGRAM_CONFIG, SECOND_STATE, SEEDS_PREFIX, TRANSFER_AUTHORITY, USER_STATE};
 use crate::errors::ContractError;
-use crate::state::{BetState, MillisecondsBetsState, ProgramConfig, UserBetsState};
+use crate::state::{BetState, ProgramConfig, SecondsBetsState, UserBetsState};
 use crate::state::program_config::{ProgramSettings, ProgramStatus};
 
 #[derive(Accounts)]
@@ -27,15 +27,15 @@ pub struct PlaceBet<'info> {
     #[account(
     init_if_needed,
     payer = buyer,
-    space = MillisecondsBetsState::INIT_SPACE,
+    space = SecondsBetsState::INIT_SPACE,
     seeds = [
     SEEDS_PREFIX.as_bytes(),
-    MILLISECOND_STATE.as_bytes(),
+    SECOND_STATE.as_bytes(),
     timestamp_to_bet.to_le_bytes().as_ref(),
     ],
     bump
     )]
-    pub millisecond_state_acc: Account<'info, MillisecondsBetsState>,
+    pub second_state_acc: Account<'info, SecondsBetsState>,
 
     #[account(
     seeds = [
@@ -58,9 +58,9 @@ impl<'info> PlaceBet<'info> {
         let program_config = &mut ctx.accounts.program_config;
         require!(program_config.status==ProgramStatus::Running,ContractError::BettingPaused);
         let user_state = &mut ctx.accounts.user_state_acc;
-        let millisecond_state = &mut ctx.accounts.millisecond_state_acc;
+        let second_state = &mut ctx.accounts.second_state_acc;
         user_state.add_bet(timestamp_to_bet).unwrap();
-        millisecond_state.add_bet(buyer.key()).unwrap();
+        second_state.add_bet(buyer.key()).unwrap();
         program_config.total_bets_sold += 1;
         Ok(())
     }

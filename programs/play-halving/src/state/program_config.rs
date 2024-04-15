@@ -2,7 +2,7 @@ use anchor_derive_space::InitSpace;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Transfer;
 
-use crate::constants::{BET_FEE, BETS_FREE_BUNDLE, MINUTES_RETURN_FEE_PC, PAID_BETS_FOR_FREE_BUNDLE, WINNER_MILLISECONDS_REWARD};
+use crate::constants::{BET_FEE, BETS_FREE_BUNDLE, MINUTES_RETURN_FEE_PC, PAID_BETS_FOR_FREE_BUNDLE, WINNER_SECONDS_REWARD};
 use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX};
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq, InitSpace)]
@@ -14,7 +14,7 @@ pub enum ProgramStatus {
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq, InitSpace)]
 pub enum WinnerReward {
-    Millisecond(u64),
+    Second(u64),
     // rebates in %pct
     Second(u8),
     // rebates in %pct
@@ -35,7 +35,7 @@ impl Default for ProgramSettings {
     fn default() -> Self {
         Self {
             bet_fee: BET_FEE,
-            grand_winner_prize: WinnerReward::Millisecond(WINNER_MILLISECONDS_REWARD),
+            grand_winner_prize: WinnerReward::Second(WINNER_SECONDS_REWARD),
             winner_rebate_2nd: WinnerReward::Minute(MINUTES_RETURN_FEE_PC),
             winner_rebate_3rd: WinnerReward::Second(MINUTES_RETURN_FEE_PC),
             bets_free_bundle: BETS_FREE_BUNDLE,

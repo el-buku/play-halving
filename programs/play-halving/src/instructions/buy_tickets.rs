@@ -5,7 +5,7 @@ use anchor_spl::token::{Mint, Token, TokenAccount};
 
 use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX, TRANSFER_AUTHORITY, USER_STATE};
 use crate::errors::ContractError;
-use crate::state::{BetState, MillisecondsBetsState, ProgramConfig, ProgramSettings, ProgramStatus, UserBetsState};
+use crate::state::{BetState, ProgramConfig, ProgramSettings, ProgramStatus, SecondsBetsState, UserBetsState};
 
 #[derive(Accounts)]
 #[instruction(num_tickets: u8)]
