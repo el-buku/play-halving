@@ -1,4 +1,4 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {};
-
-export default nextConfig;
+import withHtml from "@blunck/next-html";
+export default withHtml()(nextConfig);
