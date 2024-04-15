@@ -14,4 +14,11 @@ pub enum ContractError {
     IllegalAdminAccess,
     #[msg("Betting paused!")]
     BettingPaused,
+    #[msg("Betting is not done!")]
+    NotDone,
+    #[msg("User has already reclaimed!")]
+    AlreadyReclaimed,
+    // #[msg("Not enough tokens for sale")]
+    // NotEnoughTokensForSale,
+    // #[msg("Not enough tickets for sale")]
 }

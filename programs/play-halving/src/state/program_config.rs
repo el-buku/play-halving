@@ -58,6 +58,7 @@ pub struct ProgramConfig {
 
     pub total_bets_sold: u64,
     pub program_config_bump: u8,
+    pub winner: Option<Pubkey>,
 }
 
 #[event]
@@ -84,7 +85,8 @@ impl ProgramConfig {
         self.status = ProgramStatus::Running;
         self.settings = settings;
         self.total_bets_sold = 0;
-        self.program_config_bump = program_config_bump
+        self.program_config_bump = program_config_bump;
+        self.winner = None;
     }
 
     pub fn transfer_from_signer<'info>(
@@ -103,16 +105,7 @@ impl ProgramConfig {
                 authority: authority.to_account_info(),
             },
         );
-        // .with_signer(authority);
-
         anchor_spl::token::transfer(context, amount)
-        //     .unwrap();
-        // emit!(TransferEvent {
-        //     from: from.key.clone(),
-        //     to: to.key.clone(),
-        //     amount,
-        // });
-        // Ok(())
     }
     pub fn transfer_tokens_out<'info>(
         &self,
@@ -135,12 +128,5 @@ impl ProgramConfig {
         ).with_signer(authority_seeds);
 
         anchor_spl::token::transfer(context, amount)
-        // .unwrap();
-        // emit!(TransferEvent {
-        //     from: from.key.clone(),
-        //     to: to.key.clone(),
-        //     amount,
-        // });
-        // Ok(())
     }
 }

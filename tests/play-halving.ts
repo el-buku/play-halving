@@ -56,7 +56,6 @@ describe("play-halving", () => {
     )
 
     it("Is initialized!", async () => {
-
         const tx = await program.methods.initialize().accounts({
             admin: adminWallet.publicKey,
             programConfig: programConfigPDA,

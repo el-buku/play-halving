@@ -22,7 +22,7 @@ pub struct PauseBetting<'info> {
 }
 
 impl<'info> PauseBetting<'info> {
-    pub fn execute(ctx: Context<Self>, num_tickets: u8) -> Result<()> {
+    pub fn execute(ctx: Context<Self>) -> Result<()> {
         ctx.accounts.program_config.status = ProgramStatus::BettingPaused;
         Ok(())
     }

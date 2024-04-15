@@ -12,6 +12,12 @@ use crate::state::{BetState, MillisecondsBetsState, ProgramConfig, ProgramSettin
 pub struct BuyTickets<'info> {
     #[account(mut)]
     pub buyer: Signer<'info>,
+    #[account(
+    mut,
+    associated_token::mint = program_config.betting_mint,
+    associated_token::authority = buyer
+    )]
+    pub buyer_ata: Account<'info, TokenAccount>,
 
     #[account(
     seeds = [
@@ -32,13 +38,6 @@ pub struct BuyTickets<'info> {
     address = program_config.betting_mint
     )]
     pub betting_mint: Account<'info, Mint>,
-
-    #[account(
-    mut,
-    associated_token::mint = program_config.betting_mint,
-    associated_token::authority = buyer
-    )]
-    pub buyer_ata: Account<'info, TokenAccount>,
 
     #[account(
     init_if_needed,
@@ -65,7 +64,6 @@ impl<'info> BuyTickets<'info> {
         require!(program_config.status == ProgramStatus::Running, ContractError::BettingPaused);
         let buyer = &ctx.accounts.buyer.clone();
         let user_state = &mut ctx.accounts.user_state_acc;
-        user_state.init_if_needed();
         let mint = &ctx.accounts.betting_mint;
         let buyer_ata = &ctx.accounts.buyer_ata;
         let program_vault = &ctx.accounts.program_vault;
@@ -84,6 +82,8 @@ impl<'info> BuyTickets<'info> {
             ctx.accounts.token_program.to_account_info(),
             tickets_price,
         ).unwrap();
+
+        user_state.init_if_needed();
         user_state.allocate_tickets_with_bonus(num_tickets, program_settings);
         msg!("user:total_paid:{}", user_state.total_paid_tickets);
         msg!("user:available_paid:{}", user_state.available_paid_tickets);
