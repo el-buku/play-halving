@@ -7,10 +7,10 @@ use crate::constants::seeds::{MILLISECOND_STATE, PROGRAM_CONFIG, SEEDS_PREFIX, T
 use crate::state::{
     MillisecondsBetsState, ProgramConfig, UserBetsState,
 };
-use crate::state::program_config::{ProgramSettings, ProgramStatus, Timestamp};
+use crate::state::program_config::{ProgramSettings, ProgramStatus};
 
 #[derive(Accounts)]
-#[instruction(timestamp_to_bet: Timestamp)]
+#[instruction(timestamp_to_bet: i64)]
 pub struct Bet<'info> {
     #[account(mut)]
     pub buyer: Signer<'info>,
@@ -23,22 +23,6 @@ pub struct Bet<'info> {
     bump = program_config.program_config_bump,
     )]
     pub program_config: Account<'info, ProgramConfig>,
-
-    /// CHECK: empty PDA, will be set as authority for rewards distribution
-    #[account(
-    seeds = [
-    SEEDS_PREFIX.as_bytes(),
-    TRANSFER_AUTHORITY.as_bytes(),
-    program_config.key().as_ref()
-    ], bump = program_config.transfer_authority_bump)]
-    pub transfer_authority: UncheckedAccount<'info>,
-
-    #[account(
-    associated_token::mint = program_config.betting_mint,
-    associated_token::authority = program_config.transfer_authority
-    )]
-    pub program_vault: Account<'info, TokenAccount>,
-    pub betting_mint: Account<'info, Mint>,
 
     #[account(
     init_if_needed,

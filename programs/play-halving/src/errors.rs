@@ -10,4 +10,8 @@ pub enum ContractError {
     NoTicketsLeft,
     #[msg("Not enough tokens for purchase")]
     NotEnoughTokens,
+    #[msg("Not an admin!")]
+    IllegalAdminAccess,
+    #[msg("Betting paused!")]
+    BettingPaused,
 }

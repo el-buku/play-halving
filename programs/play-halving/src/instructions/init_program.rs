@@ -21,20 +21,13 @@ pub struct InitProgram<'info> {
     space = ProgramConfig::INIT_SPACE
     )]
     pub program_config: Account<'info, ProgramConfig>,
-    /// CHECK: empty PDA, will be set as authority for rewards distribution
-    #[account(init, space = 0, payer = admin,
-    seeds = [
-    SEEDS_PREFIX.as_bytes(),
-    TRANSFER_AUTHORITY.as_bytes(),
-    program_config.key().as_ref()
-    ], bump)]
-    pub transfer_authority: UncheckedAccount<'info>,
 
     #[account(
     init,
     payer = admin,
     associated_token::mint = betting_mint,
-    associated_token::authority = transfer_authority)]
+    associated_token::authority = program_config
+    )]
     pub program_vault: Account<'info, TokenAccount>,
 
     pub betting_mint: Account<'info, Mint>,
@@ -56,9 +49,7 @@ impl<'info> InitProgram<'info> {
             admin.key(),
             ctx.accounts.betting_mint.key(),
             ctx.accounts.program_vault.key(),
-            ctx.accounts.transfer_authority.key(),
             ProgramSettings::default(),
-            ctx.bumps.transfer_authority,
             ctx.bumps.program_config,
         );
         Ok(())
