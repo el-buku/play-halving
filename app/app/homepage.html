@@ -91,19 +91,19 @@
                 <div class="count-down">
                   <input type="number" placeholder="" />
                   <span class="month">Minutes</span>
-                  <img src="img/20.png" alt="Get 20% back" />
+                  <img src="img/20%25.png" alt=""/>
                 </div>
                 <div class="count-down">
                   <input type="number" placeholder="" />
                   <span class="month">Seconds</span>
-                  <img src="img/50.png" alt="Get 50% back" />
+                  <img src="img/50%25.png" alt=""/>
                 </div>
                 <div class="count-down">
-                  <input type="number" placeholder="" />
+                  <input type="number" placeholder=""/>
                   <span class="month">M.Secs</span>
                   <img
-                    style="right: 0"
-                    src="img/usdt.png"
+                    style="right: 0; max-width: 160px;"
+                    src="img/100k.png"
                     alt="Get big prize 100k USDT"
                   />
                 </div>
@@ -143,14 +143,35 @@
       <div class="game">
         <div class="container">
           <div class="game-rules">
-            <img src="img/crushed-btc.png" alt="Bitcoin" />
             <div class="flex-game">
+              <img src="img/crushed-btc.png" alt="Bitcoin" />
               <div class="game-title">Game Rules</div>
-              <div class="note">
-                Please note: Each entry is represented by a unique NFT, which
-                you can claim
-              </div>
             </div>
+          </div>
+          <div class="note">
+            <span class="impressive">Introduction:</span>
+            Welcome to the Project PlayHalving, created on Solana as a fully decentralized game, offers a community-driven gaming experience where precision and timing can turn predictions into rewards. Operated entirely through a transparent smart contract available on GitHub, this game exemplifies the principles of blockchain technology, ensuring fairness, transparency, and security. Once you place your halving time, your tokens are securely held in the smart contract, which autonomously executes reward distribution based on accurate Bitcoin halving blockchain records. There are no central authorities or overseers; the smart contract rules supreme.
+            <br>
+            <br>
+            <span class="impressive">Gameplay Rules:</span>
+            <br>
+            <br>
+            <span class="impressive">Getting Started:</span> Connect your digital wallet to receive a game ticket worth 5 USDC, utilizing the Solana network for transactions.
+            <br>
+            <span class="impressive">Making Your Prediction:</span> Set your prediction for the exact date and time of the next Bitcoin Halving event in the format of DD:MM:HH:MM:SS. Precision is key, as general guesses will not qualify for rewards.
+            <br>
+            <br>
+            <span class="impressive">Precision Pays:</span>
+            <br>
+            <br>
+            <span class="impressive">Exact Minute:</span> If your prediction nails the exact minute of the Halving, you'll earn a reward worth 20% of your ticket's value in USDC.
+            <br>
+            <span class="impressive">Exact Second:</span> Pinpointing the exact second increases your reward to 50% of the ticket's value in USDC.
+            <br>
+            <span class="impressive">Millisecond Mastery:</span> Guessing the precise time down to the millisecond places you among the elite winners. The prize pool will be evenly split among all participants who achieve this feat.
+            <br>
+            <br>
+            <span class="impressive">Claiming Rewards:</span> Winners must claim their USDC rewards on the website no later than 72 hours post Bitcoin Halving. Unclaimed rewards will be automatically transferred to the smart contract creator as per the decentralized governance model.
           </div>
           <div class="prizes">
             <div class="first-frame">
@@ -169,18 +190,11 @@
               >
             </div>
             <div class="third-frame">
-              <img
-                style="top: -40px; max-width: 82px"
-                src="img/hand.png"
-                alt=""
-              />
+              <img style="top: -35px; max-width: 160px" src="img/blue-ticket.png" alt=""/>
               <span>If you correctly predict the date, hour, minute, and second,you’ll be rewarded with a refund of 50% of the ticket’s value in USDT.</span>
             </div>
             <div class="fourth-frame">
-              <img
-                style="top: -35px; max-width: 160px"
-                src="img/blue-ticket.png"
-                alt=""/>
+              <img style="top: -45px; max-width: 93px;" src="img/half.png" alt=""/>
               <span>If you correctly predict the date, hour, minute, and second,you’ll be rewarded with a refund of 20% of the ticket’s value in USDT.</span>
             </div>
           </div>
@@ -363,6 +377,18 @@
       });
       sliderEl3.addEventListener("mouseout", () => {
         relativeDiv.style.display = "none";
+      });
+
+      const inputField = document.querySelector('.count-down input[type="text"]');
+      const placeholder = document.querySelector('.count-down .input-placeholder');
+
+      inputField.addEventListener('input', () => {
+
+        if (inputField.value.trim() === '') {
+          placeholder.style.opacity = 1;
+        } else {
+          placeholder.style.opacity = 0;
+        }
       });
     </script>
   </body>
