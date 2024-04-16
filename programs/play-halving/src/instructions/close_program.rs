@@ -42,7 +42,6 @@ impl<'info> CloseProgram<'info> {
     pub fn execute(ctx: Context<CloseProgram>) -> Result<()> {
         let clock = Clock::get().unwrap();
         let program_config = &mut ctx.accounts.program_config;
-        let admin = &ctx.accounts.admin;
         let program_vault = &mut ctx.accounts.program_vault;
         let admin_ata = &ctx.accounts.admin_ata;
         let mint = &ctx.accounts.betting_mint;

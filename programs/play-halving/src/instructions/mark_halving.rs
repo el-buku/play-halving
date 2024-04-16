@@ -3,7 +3,6 @@ use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::TokenAccount;
 
 use crate::constants::seeds::{PROGRAM_CONFIG, SECOND_STATE, SEEDS_PREFIX};
-use crate::constants::{GRAND_REWARDS_POOL, MAX_WINNERS_PAID};
 use crate::errors::ContractError;
 use crate::state::{BetState, MarkedHalving, ProgramConfig, ProgramStatus, SecondsBetsState};
 
@@ -50,14 +49,17 @@ impl<'info> MarkHalvingTimestamp<'info> {
     pub fn execute(ctx: Context<Self>, halving_timestamp: i64) -> Result<()> {
         let clock = Clock::get().unwrap();
         let program_config = &mut ctx.accounts.program_config;
-
+        let settings = program_config.settings;
         let second_state_acc = &mut ctx.accounts.second_state_acc;
         second_state_acc.init_if_needed();
         let program_vault = &mut ctx.accounts.program_vault;
 
         if let Some(winners) = second_state_acc.get_winners() {
-            if program_vault.amount >= GRAND_REWARDS_POOL {
-                program_config.winners = winners.into_iter().take(MAX_WINNERS_PAID).collect();
+            if program_vault.amount >= settings.grand_rewards_pool {
+                program_config.winners = winners
+                    .into_iter()
+                    .take(settings.max_winners_paid as usize)
+                    .collect();
             }
         }
         program_config.status = ProgramStatus::ClaimsOpen(MarkedHalving {

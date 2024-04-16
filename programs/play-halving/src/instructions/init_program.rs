@@ -7,6 +7,7 @@ use crate::state::program_config::ProgramSettings;
 use crate::state::ProgramConfig;
 
 #[derive(Accounts)]
+#[instruction(settings:ProgramSettings)]
 pub struct InitProgram<'info> {
     #[account(mut)]
     pub admin: Signer<'info>,
@@ -39,7 +40,7 @@ pub struct InitProgram<'info> {
 }
 
 impl<'info> InitProgram<'info> {
-    pub fn execute(ctx: Context<Self>) -> Result<()> {
+    pub fn execute(ctx: Context<Self>, settings: ProgramSettings) -> Result<()> {
         let clock = Clock::get().unwrap();
 
         let admin = &ctx.accounts.admin;
@@ -49,7 +50,7 @@ impl<'info> InitProgram<'info> {
             admin.key(),
             ctx.accounts.betting_mint.key(),
             ctx.accounts.program_vault.key(),
-            ProgramSettings::default(),
+            settings,
             ctx.bumps.program_config,
         );
         Ok(())

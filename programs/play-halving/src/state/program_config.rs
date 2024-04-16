@@ -3,10 +3,6 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::Transfer;
 
 use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX};
-use crate::constants::{
-    BETS_FREE_BUNDLE, BET_FEE, CLAIM_WINDOW_HOURS, GRAND_REWARDS_POOL, HOUR_RETURN_FEE_PC,
-    MAX_WINNERS_PAID, MINUTES_RETURN_FEE_PC, PAID_BETS_FOR_FREE_BUNDLE,
-};
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq, InitSpace)]
 pub struct MarkedHalving {
@@ -25,26 +21,13 @@ pub enum ProgramStatus {
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq, InitSpace)]
 pub struct ProgramSettings {
     pub bet_fee: u64,
-    pub grand_winner_prize: u64, // 100_000
-    pub winner_rebate_1: u8,
-    pub winner_rebate_2: u8,
+    pub grand_rewards_pool: u64, // 100_000
+    pub max_winners_paid: u8,
+    pub hour_return_pc: u8,
+    pub minute_return_pc: u8,
     pub bets_free_bundle: u8,
     pub paid_bets_for_free_bundle: u8,
     pub claim_window_hours: u8,
-}
-
-impl Default for ProgramSettings {
-    fn default() -> Self {
-        Self {
-            bet_fee: BET_FEE,
-            grand_winner_prize: GRAND_REWARDS_POOL,
-            winner_rebate_1: MINUTES_RETURN_FEE_PC,
-            winner_rebate_2: HOUR_RETURN_FEE_PC,
-            bets_free_bundle: BETS_FREE_BUNDLE,
-            paid_bets_for_free_bundle: PAID_BETS_FOR_FREE_BUNDLE,
-            claim_window_hours: CLAIM_WINDOW_HOURS,
-        }
-    }
 }
 
 #[account]
@@ -61,7 +44,7 @@ pub struct ProgramConfig {
 
     pub total_bets_placed: u64,
     pub program_config_bump: u8,
-    #[max_len(MAX_WINNERS_PAID)]
+    #[max_len(50)]
     pub winners: Vec<Pubkey>,
     pub winners_paid: u8,
 }

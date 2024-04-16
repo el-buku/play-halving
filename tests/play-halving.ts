@@ -1,5 +1,5 @@
 import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import { BN, Program } from "@coral-xyz/anchor";
 import { PlayHalving } from "../target/types/play_halving";
 
 import { join } from "path";
@@ -27,6 +27,15 @@ const sToB = (seed) => Buffer.from(seed);
 const millisToB = (ts: number) =>
   new anchor.BN(ts).toArrayLike(Buffer, "be", 2);
 
+const numbersJStoRPC = <T extends Record<string, unknown>>(
+  o: T
+): Record<string, unknown> =>
+  Object.fromEntries(
+    Object.entries(o).map(([key, value]) => [
+      key,
+      typeof value === "number" ? new BN(value) : value,
+    ])
+  );
 type PDADef = [PublicKey, number];
 const getUserStateAcc = async (
   user: PublicKey,
@@ -91,9 +100,22 @@ describe("play-halving", async () => {
     true
   );
 
+  //   this is how you get anchor workspace account types
+  type P = anchor.IdlAccounts<PlayHalving>["programConfig"]["settings"];
+  const c: P = {
+    betFee: new BN(5),
+    grandRewardsPool: new BN(100000),
+    maxWinnersPaid: 10,
+    hourReturnPc: 25,
+    minuteReturnPc: 50,
+    betsFreeBundle: 2,
+    paidBetsForFreeBundle: 5,
+    claimWindowHours: 48,
+  };
+
   it("Is initialized!", async () => {
     const tx = await program.methods
-      .initialize()
+      .initialize(c)
       .accounts({
         admin: adminWallet.publicKey,
         programConfig: programConfigPDA,
@@ -104,6 +126,9 @@ describe("play-halving", async () => {
       })
       .signers([adminWallet])
       .rpc();
-    console.log("Your transaction signature", tx);
+    console.log("init signature", tx);
+    console.log({
+      programConfigPDA: await program.account.programConfig.all(),
+    });
   });
 });

@@ -1,9 +1,8 @@
 use anchor_derive_space::InitSpace;
 use anchor_lang::prelude::*;
 
-use crate::constants::{HOUR_RETURN_FEE_PC, MINUTES_RETURN_FEE_PC};
 use crate::errors::ContractError;
-use crate::state::{ProgramSettings, ProgramStatus};
+use crate::state::ProgramSettings;
 
 pub trait BetState<T: Default + Copy> {
     fn init_if_needed(&mut self);
@@ -90,7 +89,12 @@ impl UserBetsState {
         self.available_free_tickets += extra_free_tickets as u64;
         extra_free_tickets
     }
-    pub fn get_rebates_amount(&self, halving_timestamp: i64, ticket_price: u64) -> u64 {
+    pub fn get_rebates_amount(
+        &self,
+        settings: ProgramSettings,
+        halving_timestamp: i64,
+        ticket_price: u64,
+    ) -> u64 {
         let one_minute = 60; //sec
         let one_hour = one_minute * 60;
         let mut amount = 0;
@@ -102,9 +106,9 @@ impl UserBetsState {
             }
             let diff = (halving_timestamp - bet).abs();
             if diff < one_minute {
-                amount += ticket_price * (MINUTES_RETURN_FEE_PC / 100) as u64
+                amount += ticket_price * (settings.minute_return_pc / 100) as u64
             } else if diff < one_hour {
-                amount += ticket_price * (HOUR_RETURN_FEE_PC / 100) as u64
+                amount += ticket_price * (settings.hour_return_pc / 100) as u64
             }
         }
         amount

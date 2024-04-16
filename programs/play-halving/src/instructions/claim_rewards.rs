@@ -6,7 +6,6 @@ use anchor_spl::token::{Mint, Token, TokenAccount};
 use program_config::MarkedHalving;
 
 use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX, USER_STATE};
-use crate::constants::{GRAND_REWARDS_POOL, MAX_WINNERS_PAID};
 use crate::errors::ContractError;
 use crate::state::program_config::ProgramStatus;
 use crate::state::{program_config, ProgramConfig, UserBetsState};
@@ -88,13 +87,15 @@ impl<'info> ClaimRewards<'info> {
     pub fn execute(ctx: Context<Self>) -> Result<()> {
         let clock = Clock::get().unwrap();
         let program_config = &mut ctx.accounts.program_config;
+        let settings = program_config.settings;
         let buyer = &ctx.accounts.buyer;
         let program_vault = &mut ctx.accounts.program_vault;
         let buyer_ata = &ctx.accounts.buyer_ata;
         let mint = &ctx.accounts.betting_mint;
         let e_decimals = 10_u64.pow(mint.decimals as u32);
-        let ticket_price = program_config.settings.bet_fee * e_decimals;
-        let per_winner = GRAND_REWARDS_POOL / MAX_WINNERS_PAID as u64 * e_decimals;
+        let ticket_price = settings.bet_fee * e_decimals;
+        let per_winner =
+            settings.grand_rewards_pool / settings.max_winners_paid as u64 * e_decimals;
         let transfer_acc_infos = Transfer {
             from: program_vault.to_account_info(),
             to: buyer_ata.to_account_info(),
@@ -147,8 +148,11 @@ impl<'info> ClaimRewards<'info> {
                     });
                 } else {
                     // we pay back bets matching minutes and hours
-                    let rebates_total =
-                        user_state.get_rebates_amount(halving_timestamp, ticket_price);
+                    let rebates_total = user_state.get_rebates_amount(
+                        program_config.settings,
+                        halving_timestamp,
+                        ticket_price,
+                    );
                     let winners_left_to_pay =
                         program_config.winners.len() as u8 - program_config.winners_paid;
                     let min_amount = winners_left_to_pay as u64 * per_winner;
