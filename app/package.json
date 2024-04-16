@@ -12,6 +12,7 @@
     "@blunck/next-html": "^1.0.0",
     "@coral-xyz/anchor": "^0.29.0",
     "@debridge-finance/solana-transaction-parser": "^2.0.1",
+    "@hellomoon/api": "^1.19.0",
     "@solana/spl-token": "^0.4.3",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-react": "^0.15.35",

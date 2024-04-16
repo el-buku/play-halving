@@ -11,7 +11,7 @@ play_halving = "AwhF2my6A4mmpBBSP2UAWFo4392DY6Vp6TdrP1uFPCvu"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "./deployment.json"
 
 [scripts]

@@ -13,5 +13,10 @@ import { seeds } from "../../client/config";
 
 export default function Home() {
   console.log(seeds);
-  return <Homepage />;
+  return (
+    <body>
+      <WalletMultiButtonDynamic />;
+    </body>
+  );
+  // return <Homepage />;
 }
