@@ -46,12 +46,13 @@ pub struct PlaceBet<'info> {
     pub user_state_acc: Account<'info, UserBetsState>,
 
     pub system_program: Program<'info, System>,
-    // pub clock: Sysvar<'info, Clock>, // For accessing the current blockchain timestamp
+    pub clock: Sysvar<'info, Clock>,
 }
 
 #[event]
 pub struct PlaceBetEvent {
     timestamp_to_bet: i64,
+    event_timestamp: i64,
     buyer: Pubkey,
     total_paid_tickets: u64,
     available_paid_tickets: u64,
@@ -60,6 +61,7 @@ pub struct PlaceBetEvent {
 }
 impl<'info> PlaceBet<'info> {
     pub fn execute(ctx: Context<Self>, timestamp_to_bet: i64) -> Result<()> {
+        let clock = Clock::get().unwrap();
         let buyer = &ctx.accounts.buyer;
         let program_config = &mut ctx.accounts.program_config;
         require!(
@@ -73,6 +75,7 @@ impl<'info> PlaceBet<'info> {
         program_config.total_bets_placed += 1;
         emit!(PlaceBetEvent {
             timestamp_to_bet,
+            event_timestamp: clock.unix_timestamp,
             buyer: buyer.key(),
             total_placed_tickets: user_state.total_placed_tickets,
             total_paid_tickets: user_state.total_paid_tickets,

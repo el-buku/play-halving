@@ -12,6 +12,7 @@ import { UnsafeBurnerWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { clusterApiUrl } from "@solana/web3.js";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import { useMemo } from "react";
+import { ProgramContextProvider } from "./ProgramContext";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
@@ -43,7 +44,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>{children}</WalletModalProvider>
+        <WalletModalProvider>
+          <ProgramContextProvider>{children}</ProgramContextProvider>
+        </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
   );

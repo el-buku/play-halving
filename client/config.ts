@@ -1,10 +1,10 @@
 import { BN, IdlAccounts } from "@coral-xyz/anchor";
 import { PlayHalving } from "../target/types/play_halving";
-import { PublicKey } from "@solana/web3.js";
-import { loadWalletKey } from "./utils";
+import { PublicKey, Keypair } from "@solana/web3.js";
+// import { loadWalletKey } from "./utils";
 
-export const adminWallet = loadWalletKey(__dirname + "/../deployment.json");
-
+// export const adminWallet = loadWalletKey(__dirname + "/../deployment.json");
+export const adminWallet = Keypair.generate();
 // this is how you get anchor workspace account types
 export type ProgramSettings =
   IdlAccounts<PlayHalving>["programConfig"]["settings"];
