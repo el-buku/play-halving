@@ -41,10 +41,10 @@ const useTxnList = (): TxnSummary[] => {
   ]);
 
   // const parsed = txParser.parseTransaction(connection, sig.signature, false);
-  // console.log({ parsed });
-  connection.onSignature(txId, (updatedTxInfo, context) =>
-    console.log("Updated account info: ", updatedTxInfo)
-  );
+  // // console.log({ parsed });
+  // connection.onSignature(txId, (updatedTxInfo, context) =>
+  //   console.log("Updated account info: ", updatedTxInfo)
+  // );
   return txnList;
 };
 

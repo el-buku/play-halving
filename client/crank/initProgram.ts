@@ -1,6 +1,6 @@
 import { Program } from "@coral-xyz/anchor";
 import { PlayHalving } from "../../target/types/play_halving";
-import { adminWallet, bettingMint, programSettings } from "../config";
+import { bettingMint, programSettings } from "../config";
 import {
   TOKEN_PROGRAM_ID,
   getAssociatedTokenAddressSync,
@@ -8,7 +8,9 @@ import {
 import { getProgramConfigPDADef } from "../PDAs";
 import { SystemProgram, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
+import { loadWalletKey } from "../loadKp";
 
+export const adminWallet = loadWalletKey(__dirname + "/../deployment.json");
 const run = async () => {
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
