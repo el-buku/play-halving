@@ -1,5 +1,9 @@
 test-ledger
-target
+target/release
+target/deploy
+target/debug
+target/sbf-solana-solana
+target/*.json
 .anchor
 .DS_Store
 **/*.rs.bk
