@@ -26,6 +26,6 @@ export const bettingMint = new PublicKey(bettingMintAddy);
 export const seeds = {
   SEEDS_PREFIX: "PLAY_HALVING_____",
   PROGRAM_CONFIG: "PROGRAM_CONFIG",
-  MILLISECOND_STATE: "MILLISECOND_STATE",
+  SECOND_STATE: "SECOND_STATE",
   USER_STATE: "USER_STATE",
 };

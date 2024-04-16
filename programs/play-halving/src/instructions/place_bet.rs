@@ -29,7 +29,7 @@ pub struct PlaceBet<'info> {
     seeds = [
     SEEDS_PREFIX.as_bytes(),
     SECOND_STATE.as_bytes(),
-    timestamp_to_bet.to_le_bytes().as_ref(),
+    &timestamp_to_bet.to_le_bytes(),
     ],
     bump
     )]
@@ -71,7 +71,7 @@ impl<'info> PlaceBet<'info> {
         user_state.add_bet(timestamp_to_bet).unwrap();
         second_state.add_bet(buyer.key()).unwrap();
         program_config.total_bets_placed += 1;
-        emit_cpi!(PlaceBetEvent {
+        emit!(PlaceBetEvent {
             timestamp_to_bet,
             buyer: buyer.key(),
             total_placed_tickets: user_state.total_placed_tickets,

@@ -32,6 +32,7 @@ pub struct BuyTickets<'info> {
     pub program_config: Account<'info, ProgramConfig>,
 
     #[account(
+        mut,
     associated_token::mint = program_config.betting_mint,
     associated_token::authority = program_config
     )]
@@ -108,7 +109,7 @@ impl<'info> BuyTickets<'info> {
         msg!("user:available_paid:{}", user_state.available_paid_tickets);
         msg!("user:available_free:{}", user_state.available_free_tickets);
         msg!("Transfer complete");
-        emit_cpi!(BuyTicketsEvent {
+        emit!(BuyTicketsEvent {
             num_tickets,
             num_free_tickets,
             total_placed_tickets: user_state.total_placed_tickets,

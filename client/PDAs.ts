@@ -1,26 +1,27 @@
 import { PublicKey } from "@solana/web3.js";
 import { seeds } from "./config";
-import { sToB, millisToB } from "./utils";
+import { sToB } from "./utils";
+import * as anchor from "@coral-xyz/anchor";
 
 type PDADef = [PublicKey, number];
-const getUserStateAcc = async (
+export const getUserStateAcc = (
   user: PublicKey,
   programId: PublicKey
-): Promise<PDADef> => {
+): PDADef => {
   return PublicKey.findProgramAddressSync(
     [sToB(seeds.SEEDS_PREFIX), sToB(seeds.USER_STATE), user.toBuffer()],
     programId
   );
 };
-const getMillisecondStateAcc = async (
+export const getSecondStateAcc = (
   timestamp: number,
   programId: PublicKey
-): Promise<PDADef> => {
+): PDADef => {
   return PublicKey.findProgramAddressSync(
     [
       sToB(seeds.SEEDS_PREFIX),
-      sToB(seeds.MILLISECOND_STATE),
-      millisToB(timestamp),
+      sToB(seeds.SECOND_STATE),
+      new anchor.BN(timestamp).toArrayLike(Buffer, "le", 8),
     ],
     programId
   );

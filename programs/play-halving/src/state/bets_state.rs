@@ -19,7 +19,7 @@ pub trait BetState<T: Default + Copy> {
 pub struct SecondsBetsState {
     pub initialized: bool,
     // 30k max bets per program address * 32 bytes = 96kb,
-    #[max_len(30_000)]
+    #[max_len(40)]
     pub users: Vec<Pubkey>, // 30k max bets per program address * 32 bytes = 96kb
 }
 
@@ -51,10 +51,10 @@ impl BetState<Pubkey> for SecondsBetsState {
         for i in 0..self.users.len() {
             if self.users[i] == Pubkey::default() {
                 self.users[i] = bet_user;
-                return Ok(());
             }
         }
-        Err(ContractError::SecondOverPurchased.into())
+        return Ok(());
+        // Err(ContractError::SecondOverPurchased.into())
     }
 }
 
@@ -67,7 +67,7 @@ pub struct UserBetsState {
     pub available_paid_tickets: u64,
     pub available_free_tickets: u64,
     pub total_placed_tickets: u64,
-    #[max_len(30_000)]
+    #[max_len(900)]
     pub placed_bet_seconds: Vec<i64>,
 }
 
@@ -130,7 +130,7 @@ impl BetState<i64> for UserBetsState {
 
     fn add_bet(&mut self, bet_second: i64) -> anchor_lang::Result<()> {
         require!(
-            self.placed_bet_seconds.len() < 30_000,
+            self.placed_bet_seconds.len() < 900,
             ContractError::UserOverPurchased
         );
         let has_tickets_left: bool =

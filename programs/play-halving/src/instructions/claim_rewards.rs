@@ -131,7 +131,7 @@ impl<'info> ClaimRewards<'info> {
                     let paid_tickets = user_state.total_paid_tickets;
                     let amount = paid_tickets * ticket_price;
                     perform_transfer(amount);
-                    emit_cpi!(ClaimEvent {
+                    emit!(ClaimEvent {
                         amount,
                         reclaim_result: ClaimResult::Return,
                         user: buyer.key(),
@@ -141,7 +141,7 @@ impl<'info> ClaimRewards<'info> {
                     let amount = per_winner;
                     perform_transfer(amount);
                     program_config.winners_paid += 1;
-                    emit_cpi!(ClaimEvent {
+                    emit!(ClaimEvent {
                         amount,
                         reclaim_result: ClaimResult::Winner,
                         user: buyer.key(),
@@ -162,7 +162,7 @@ impl<'info> ClaimRewards<'info> {
                         program_vault.amount - min_amount
                     };
                     perform_transfer(amount);
-                    emit_cpi!(ClaimEvent {
+                    emit!(ClaimEvent {
                         amount: 0_u64,
                         reclaim_result: ClaimResult::Rebate,
                         user: buyer.key(),
