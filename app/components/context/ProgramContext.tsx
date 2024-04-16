@@ -3,6 +3,7 @@
 import {
   PropsWithChildren,
   createContext,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -19,7 +20,7 @@ import {
   PublicKey,
   SystemProgram,
 } from "@solana/web3.js";
-import { bettingMint } from "../../../client/config";
+import { bettingMint, bettingMintAddy } from "../../../client/config";
 import { SolanaParser } from "@debridge-finance/solana-transaction-parser";
 import {
   getProgramConfigPDADef,
@@ -32,6 +33,11 @@ import {
   getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
+// import {
+//   InboundTransactionListener,
+//   SubscriptionStreamManager,
+// } from "@/services/sol-listener";
+// import { SUB_ID } from "@/constants";
 
 type ProgramData = {
   buyTicketsIxn: (
@@ -56,23 +62,79 @@ export type TxnSummary = {
 };
 
 const useTxnList = (): TxnSummary[] => {
-  const { connection } = useConnection();
+  const programConfigPDA = getProgramConfigPDADef(programId)[0];
   const [txnList, setTxnList] = useState<TxnSummary[]>([]);
-
-  const txParser = new SolanaParser([
-    { idl: IDL as PlayHalving, programId: programAddy },
-  ]);
-
-  // const parsed = txParser.parseTransaction(connection, sig.signature, false);
-  // // console.log({ parsed });
-  // connection.onSignature(txId, (updatedTxInfo, context) =>
-  //   console.log("Updated account info: ", updatedTxInfo)
-  // );
+  const { connection } = useConnection();
+  useEffect(() => {
+    const f = async () => {
+      const txParser = new SolanaParser([
+        { idl: IDL as PlayHalving, programId: programAddy },
+      ]);
+      const t = await connection.getConfirmedSignaturesForAddress2(programId);
+      for (let sig of t) {
+        const txn = await connection.getTransaction(sig.signature);
+        const parsed = await txParser.parseTransaction(
+          connection,
+          sig.signature
+        );
+        // const eventParser = new anchor.EventParser(
+        //   programId,
+        //   new anchor.BorshCoder(IDL)
+        // );
+        // console.log(txn, parsed);
+        // if (txn?.meta?.logMessages) {
+        //   console.log(txn.meta.logMessages);
+        //   const events = eventParser.parseLogs(txn?.meta?.logMessages);
+        //   for (let event of events) {
+        //     console.log(event);
+        //   }
+        // }
+      }
+    };
+    setInterval(f, 5000);
+  }, [connection, programConfigPDA]);
   return txnList;
 };
+// new InboundTransactionListener(SUB_ID, (txs) => {
+//   txs.map(console.log);
+// });
+
+// const initStream = useCallback(async (): Promise<void> => {
+//   console.log({ programConfigPDA: programConfigPDA.toString() });
+//   // const streamManager = new SubscriptionStreamManager(
+//   //   bettingMintAddy,
+//   //   programConfigPDA.toString()
+//   // );
+//   // console.log({ streamManager });
+//   // const subData = await streamManager.init();
+//   // if (!subData?.subscriptionId) {
+//   //   console.error("Subscription not created");
+//   // } else {
+//   // const subId = subData.subscriptionId;
+
+//   // const cleanupStream = async () => {
+//   //   console.log("Closing stream sub..");
+//   //   await streamManager.closeStream(subId);
+//   //   process.exit(0);
+//   // };
+//   // return cleanupStream;
+// }, [programConfigPDA]);
+// useEffect(() => {
+//   initStream();
+// }, [programConfigPDA, initStream]);
+// to subscribe for all mints:
+// const allMintsSubId = "5a47d17c-6e2e-42f6-bea9-7e458e91adce"
+
+// const parsed = txParser.parseTransaction(connection, sig.signature, false);
+// // console.log({ parsed });
+// connection.onSignature(txId, (updatedTxInfo, context) =>
+//   console.log("Updated account info: ", updatedTxInfo)
+// );
+// return txnList;
 
 export const ProgramContextProvider = ({ children }: PropsWithChildren<{}>) => {
   const { connection } = useConnection();
+
   const wallet = useAnchorWallet();
   const [userBetStateInfo, setUserBetStateInfo] = useState();
   let txnList = useTxnList();
@@ -162,6 +224,7 @@ export const ProgramContextProvider = ({ children }: PropsWithChildren<{}>) => {
     ads.on("change", (info) => {
       console.log({ userStateAccInfo: info });
     });
+
     // const userBetStateInfo = await program.account.userBetsState.fetch(
     //   userStateAcc
     // );

@@ -1,16 +1,13 @@
-// import WebSocket from "ws";
+// import WebSocket from "isomorphic-ws";
 // import { Connection, PublicKey } from "@solana/web3.js";
 // import {
-//   UnparsedAccountStreamCreate,
 //   dataStreamFilters,
 //   RestClient,
 //   CreateStreamsRequest,
 //   DeleteStreamsRequest,
+//   TokenTransferStream,
 // } from "@hellomoon/api";
-
-// const API_KEY = "732027ca-56f4-4243-828e-3c6f01a9edc7";
-// const RPC_WSS = "wss://kiki-stream.hellomoon.io";
-// const RPC_URL = `https://rpc.hellomoon.io/${API_KEY}`;
+// import { API_KEY, RPC_URL, RPC_WSS } from "@/constants";
 
 // type TxnData = {
 //   blockId: number;
@@ -40,24 +37,26 @@
 // //     amount: 5000000
 // //   },
 
-// class InboundTransactionListener {
-//   socket;
+// export class InboundTransactionListener {
+//   socket: WebSocket;
 //   subId: string;
 //   onTransactions: (txns: TxnData[]) => void;
 //   constructor(subId: string, onTransaction: (txns: TxnData[]) => void) {
 //     this.subId = subId;
 //     this.connect();
 //     this.onTransactions = onTransaction;
+//     this.socket = new WebSocket(RPC_WSS);
 //   }
 
 //   connect(e = null) {
 //     this.socket = new WebSocket(RPC_WSS);
+
 //     this.socket.addEventListener("open", (e) => this.onOpen(e));
 //     this.socket.addEventListener("message", (e) => this.onMessage(e));
-//     this.socket.addEventListener("close", (e) => this.connect(e)); //Reconnect
+//     this.socket.addEventListener("close", (e) => this.connect()); //Reconnect
 //   }
 
-//   onOpen(e) {
+//   onOpen(e: { target: WebSocket }) {
 //     console.log("Socket open");
 //     const msg = JSON.stringify({
 //       action: "subscribe",
@@ -65,28 +64,54 @@
 //       subscriptionId: this.subId,
 //     });
 
-//     this.socket.send(msg);
+//     this.send(msg);
 //   }
 
-//   onMessage(e) {
+//   onMessage(e: { data: any; type: string; target: WebSocket }) {
 //     if (e.data.indexOf("successfully subscribed") > -1) return; //Subscribed
 
 //     const d: TxnData[] = JSON.parse(e.data);
 //     this.onTransactions(d);
 //   }
+//   send(message, callback?) {
+//     this.waitForC(() => {
+//       this.socket.send(message);
+//       if (typeof callback !== "undefined") {
+//         callback();
+//       }
+//     }, 1000);
+//   }
+//   waitForC(callback, interval) {
+//     if (this.socket.readyState === 1) {
+//       callback();
+//     } else {
+//       var that = this;
+//       // optional: implement backoff for interval here
+//       setTimeout(function () {
+//         that.waitForC(callback, interval);
+//       }, interval);
+//     }
+//   }
 // }
 
-// class SubscriptionStreamManager {
-//   stream: BalanceChangeStream;
+// export class SubscriptionStreamManager {
+//   stream: TokenTransferStream;
 //   restClient: RestClient;
-//   constructor(mintAddr: string) {
-//     this.stream = new BalanceChangeStream({
+//   constructor(mintAddr: string, owner: string) {
+//     this.stream = new TokenTransferStream({
 //       target: {
 //         targetType: "WEBSOCKET",
 //       },
 //       filters: {
 //         mint: dataStreamFilters.text.equals(mintAddr),
 //         amount: dataStreamFilters.numeric.greaterThanEquals(0),
+//         // owner:
+//         // owner: {
+//         //   //@ts-ignore
+//         //   fields: ["destinationOwner"],
+//         //   filter: dataStreamFilters.text.equals(owner),
+//         //   type: "COMPOSITE",
+//         // },
 //       },
 //     });
 //     this.restClient = new RestClient(API_KEY);
@@ -98,56 +123,4 @@
 //   async closeStream(subId: string) {
 //     return this.restClient.send(new DeleteStreamsRequest(subId));
 //   }
-// }
-
-// function formatMintAmount(amount: number, decimals: number) {
-//   const multiplier = Math.pow(10, decimals);
-//   const formattedAmount = (amount / multiplier).toFixed(decimals);
-//   return formattedAmount;
-// }
-
-// async function getMintDecimals(mintAdddr: string) {
-//   console.log("fetching decimals");
-//   const connection = new Connection(RPC_URL);
-//   const tokenSupply = await connection.getTokenSupply(new PublicKey(mintAdddr));
-//   const decimals = tokenSupply.value.decimals;
-//   console.log({ decimals });
-//   return decimals;
-// }
-
-// async function main(mint: string) {
-//   const streamManager = new SubscriptionStreamManager(mint);
-//   const subData = await streamManager.init();
-//   if (!subData?.subscriptionId) {
-//     throw new Error("Subscription not created");
-//   }
-//   // to subscribe for all mints:
-//   // const allMintsSubId = "5a47d17c-6e2e-42f6-bea9-7e458e91adce"
-//   const subId = subData.subscriptionId;
-
-//   const mintDecimals = await getMintDecimals(mint);
-//   const filterTxn = (txn: TxnData) => txn.mint == mint;
-//   const handleTxn = ({ account, accountOwner, amount, ...rest }: TxnData) => {
-//     if (!accountOwner) return;
-//     if (PublicKey.isOnCurve(accountOwner)) {
-//       console.log("\n New BUY Txn:");
-//       console.log("TokenAccount:", account);
-//       console.log("AccOwner:", accountOwner);
-//       console.log("txn amount", formatMintAmount(amount, mintDecimals));
-//       // console.log(rest);
-//     }
-//   };
-//   new InboundTransactionListener(subId, (txs) => {
-//     txs.map(handleTxn);
-//   });
-
-//   async function cleanupStream() {
-//     console.log("Closing stream sub..");
-//     await streamManager.closeStream(subId);
-//     process.exit(0);
-//   }
-//   process.on("SIGTERM", cleanupStream);
-//   process.on("SIGINT", cleanupStream);
-//   process.on("SIGHUP", cleanupStream);
-//   process.on("end", cleanupStream);
 // }
