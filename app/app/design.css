@@ -3,11 +3,11 @@ body {
 }
 .guess-title {
   max-width: 1031px;
-  font-size: 76px;
   font-weight: 500;
   line-height: 1.29;
   letter-spacing: -2.28px;
   text-align: center;
+  font-size: 50px;
   color: #000;
 }
 .count-down-card {
@@ -63,6 +63,7 @@ body {
   color: #fff;
 }
 .count-down {
+  position: relative;
   min-width: 160px;
   padding: 30px 0;
   display: inline-block;
@@ -82,7 +83,7 @@ body {
   cursor: pointer;
 }
 .green-ticket:hover {
-  box-shadow: 0 4px 64px 0 rgba(174, 189, 213, 0.16);
+  background-image: linear-gradient(to bottom, #55f09e 0%, #38b472 100%);
 }
 .count-down input:focus {
   outline: unset;
@@ -98,7 +99,7 @@ body {
   padding: 0;
 }
 .guess {
-  padding: 44px 0 80px;
+  padding: 40px 0 80px;
   background-image: linear-gradient(to top, rgba(90, 126, 255, 0.04) 100%, rgba(255, 255, 255, 0) 0%);
 }
 .count-down span {
@@ -109,8 +110,8 @@ body {
   margin-bottom: 64px;
 }
 img.btc-img {
-  max-width: 952px;
-  margin: -7% 0 -16%;
+  max-width: 700px;
+  margin: -2% 0 -13%;
   z-index: -10;
 }
 .flex-btc {
@@ -128,12 +129,12 @@ span.month {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  position: relative;
 }
 .count-down img {
   position: absolute;
   top: -70px;
   right: 10px;
+  max-width: 140px;
 }
 .footer-purple {
   display: flex;
@@ -201,19 +202,23 @@ span.last-purple-text {
 }
 .game-rules {
   display: flex;
-  gap: 50px;
+  flex-direction: column;
+  gap: 10px;
   width: 100%;
   border-radius: 24px;
+  background-size: cover;
+  background-repeat: no-repeat;
   background-image: url("img/cta_bg.png");
 }
 .game-rules img {
-  max-width: 238px;
-  padding-left: 16px;
+  max-width: 95px;
+  margin-left: 40px;
 }
 .note {
   font-size: 17px;
   font-weight: 300;
   color: #0f2517;
+  padding: 40px;
 }
 .game-title {
   font-size: 48px;
@@ -222,8 +227,8 @@ span.last-purple-text {
 }
 .flex-game {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  justify-content: left;
+  align-items: center;
   gap: 32px;
 }
 .game {
@@ -234,6 +239,9 @@ span.last-purple-text {
   display: flex;
   gap: 20px;
   margin-top: 80px;
+}
+span.impressive {
+  font-weight: 500;
 }
 .first-frame {
   width: 100%;
@@ -363,53 +371,53 @@ table {
 }
 .btc-1 img {
   position: absolute;
-  width: 100px;
-  bottom: 35%;
-  left: 20%;
+  width: 85px;
+  bottom: 38%;
+  left: 26%;
   max-width: 160px;
   animation: 3s ease-in-out 0.75s infinite normal none running hgiAai;
 }
 .btc-2 img {
-  width: 125px;
+  width: 84px;
   top: 10%;
-  right: 50%;
+  right: 52%;
   position: absolute;
   animation: 3s ease-in-out 0.25s infinite normal none running hgiAai;
 }
 .btc-4 img {
-  width: 200px;
-  left: 0;
+  width: 145px;
+  left: 5%;
+  top: 7%;
   position: absolute;
   animation: 3s ease-in-out 0.25s infinite normal none running dwWSTH;
 }
 .btc-5 img {
-  width: 200px;
-  right: 11%;
-  top: 27%;
-  z-index: 10;
+  right: 17%;
+  top: 32%;
+  z-index: 9;
   position: absolute;
-  max-width: 200px;
+  max-width: 147px;
   animation: 3s ease-in-out 0.25s infinite normal none running cxSDNK;
 }
 .stone-2 img {
-  width: 50px;
-  right: 36%;
+  width: 30px;
+  right: 38%;
   top: 10%;
   position: absolute;
   animation: 3s ease-in-out 0.25s infinite normal none running dwWSTH;
 }
 .stone-3 img {
-  width: 50px;
-  right: 19%;
+  width: 32px;
+  right: 28%;
   bottom: 22%;
   position: absolute;
   animation: 3s ease-in-out 0.25s infinite normal none running elgpeR;
 }
 .hammer img {
-  right: 7%;
-  top: 3%;
+  right: 16%;
+  top: 11%;
   position: absolute;
-  max-width: 260px;
+  max-width: 165px;
   animation: 3s ease-in-out 0.25s infinite normal none running elgpeR;
 }
 @keyframes hgiAai {
@@ -478,7 +486,7 @@ table {
   }
 }
 .prog-cnt {
-  padding-top: 44px;
+  padding-top: 40px;
   padding-bottom: 60px;
   background-image: linear-gradient(to top, rgba(90, 126, 255, 0.04) 100%, rgba(255, 255, 255, 0) 0%);
 }
@@ -530,7 +538,18 @@ table {
   font-weight: 300;
   text-align: center;
   color: #fff;
-  margin-top: 20px;
+  margin-top: 30px;
+  margin-left: 3.5%;
+}
+.tool::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -10px;
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent transparent #1a1a1a transparent;
 }
 input[type=range]::-webkit-progress-value {
   background-color: #7b3dff;
@@ -552,23 +571,174 @@ progress::-webkit-progress-value {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
+  max-width: 664px;
   border-radius: 10px;
-  height: 25px;
+  height: 14px;
   background: transparent;
   outline: none;
 }
 #tooltip {
   position: absolute;
 }
-
-
-
+.connect-wallet {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background-color: #7c5aff;
+  border: 0;
+}
+.connect-wallet span {
+  font-size: 18px;
+  font-weight: 500;
+  text-align: left;
+  color: #fff;
+}
+.flex-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo {
+  max-width: 180px;
+}
+.header-flex {
+  display: flex;
+  gap: 16px;
+}
+.modal-header {
+  background-color: #dee4ee;
+  border-radius: 24px 24px 0 0;
+}
+button.close {
+  cursor: pointer;
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 0 225px;
+  padding: 6px 0;
+  border: solid 1px #dee4ee;
+  background-image: linear-gradient(to bottom, #fff, #f5f5f5);
+}
+.modal-dialog {
+  min-width: 900px;
+}
+.modal-content {
+  border-radius: 24px;
+}
+.modal-header .close {
+  margin: 0 0 -1rem auto;
+}
+.us {
+  font-size: 17px;
+  font-weight: 300;
+  color: #0f2517;
+  text-transform: capitalize;
+}
+.connect {
+  font-size: 24px;
+  font-weight: 500;
+  text-align: left;
+  color: #0f2517;
+}
+.count-down::before {
+  content: ""; /* Ensure there is content to apply styles */
+  position: absolute; /* Position the image relative to the container */
+  top: 41%;
+  left: 41px;
+  transform: translateY(-50%); /* Center the image vertically */
+  width: 71px;
+  height: 82px;
+  background-image: url('img/comment.png'); /* Set the URL of the placeholder image */
+  background-size: cover; /* Adjust the background size as needed */
+}
+.hide-before::before {
+  display: none; /* Hide the ::before pseudo-element */
+}
+.count-down:hover::before {
+  background-image: unset;
+}
+button.connect-wallet:hover {
+  background-color: #492ac1;
+  cursor: pointer;
+}
+.flex-wallet {
+  display: flex;
+  justify-content: space-between;
+}
+.modal-body {
+  padding: 0;
+}
+.crypto {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.view-more {
+  font-size: 17px;
+  font-weight: 300;
+  text-align: left;
+  color: #7c5aff;
+  text-decoration: underline;
+}
+.block-last {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.crypto img {
+  max-width: 64px;
+}
+.crypto-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.crypto-cnt {
+  display: flex;
+  flex-direction: column;
+}
+.modal-cnt-wallets {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 44px 64px;
+}
+.connect-wallet-modal {
+  padding-bottom:40px;
+}
+.crypto-cnt span {
+  font-size: 16px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-align: center;
+  color: #000;
+}
+.flex-wallet img {
+  border-radius: 0 0 0 24px;
+}
 @media(max-width: 1201px) {
+  .count-down::before {
+    left: 29px;
+  }
+  input[type="range" i], .slidecontainer {
+    width: 500px;
+  }
   .text-footer {
     padding: 22px 0 22px;
   }
   .guess-title {
-    font-size: 62px;
+    font-size: 48px;
   }
   .count-down {
     min-width: 130px;
@@ -588,11 +758,26 @@ progress::-webkit-progress-value {
   }
 }
 @media(max-width: 991px) {
+  .slidecontainer {
+    margin: 25px 0;
+  }
+  input[type="range" i], .slidecontainer {
+    width: 100%;
+    max-width: unset;
+  }
+  .connect-wallet {
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .flex-navbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
   .live-stats {
     font-size: 28px;
   }
   .guess-title {
-    font-size: 45px;
+    font-size: 40px;
   }
   .guess-number {
     flex-wrap: wrap;
@@ -615,8 +800,9 @@ progress::-webkit-progress-value {
     width: 290px;
   }
   img.btc-img {
-    max-width: unset;
     width: 100%;
+    max-width: 700px;
+    margin: -2% 0 -24%;
   }
   .live th {
     padding: 20px 15px;
@@ -637,15 +823,23 @@ progress::-webkit-progress-value {
   }
   .btc-5 img {
     max-width: 135px;
+    right: 8%;
+    top: 38%;
   }
   .hammer img {
+    right: 4%;
     max-width: 185px;
   }
   .btc-2 img {
     width: 87px;
   }
   .btc-4 img {
-    width: 153px;
+    width: 145px;
+    left: -1%;
+  }
+  .stone-3 img {
+    width: 32px;
+    right: 23%;
   }
 }
 @media(max-width: 769px) {
@@ -679,6 +873,9 @@ progress::-webkit-progress-value {
   }
 }
 @media(max-width: 600px) {
+  .note {
+    padding: 20px;
+  }
   .footer-purple img {
     display: none;
   }
@@ -693,7 +890,6 @@ progress::-webkit-progress-value {
   .game-rules img {
     max-width: 100px;
     height: 100px;
-    padding-left: 16px;
   }
   .game-rules {
     align-items: flex-end;
@@ -703,9 +899,13 @@ progress::-webkit-progress-value {
   }
   .flex-game {
     gap: 10px;
+    width: 100%;
+  }
+  .game-title {
+    font-size: 26px;
   }
   .guess-title {
-    font-size: 32px;
+    font-size: 23px;
   }
   .guess {
     padding: 44px 0 50px;
@@ -733,6 +933,9 @@ progress::-webkit-progress-value {
   }
 }
 @media(max-width: 400px) {
+  .count-down::before {
+    left: 37%;
+  }
   .live-frame img {
     max-width: 200px;
   }
