@@ -133,7 +133,7 @@ span.month {
 .count-down img {
   position: absolute;
   top: -70px;
-  right: 10px;
+  right: 25px;
   max-width: 140px;
 }
 .footer-purple {
@@ -647,18 +647,18 @@ button.close {
   color: #0f2517;
 }
 .count-down::before {
-  content: ""; /* Ensure there is content to apply styles */
-  position: absolute; /* Position the image relative to the container */
+  content: "";
+  position: absolute;
   top: 41%;
-  left: 41px;
-  transform: translateY(-50%); /* Center the image vertically */
+  left: 30%;
+  transform: translateY(-50%);
   width: 71px;
   height: 82px;
-  background-image: url('img/comment.png'); /* Set the URL of the placeholder image */
-  background-size: cover; /* Adjust the background size as needed */
+  background-image: url('img/comment.png');
+  background-size: cover;
 }
 .hide-before::before {
-  display: none; /* Hide the ::before pseudo-element */
+  display: none;
 }
 .count-down:hover::before {
   background-image: unset;
@@ -777,7 +777,7 @@ button.connect-wallet:hover {
 }
 @media(max-width: 1201px) {
   .count-down::before {
-    left: 29px;
+    left: 26%;
   }
   input[type="range" i], .slidecontainer {
     width: 500px;
@@ -799,13 +799,16 @@ button.connect-wallet:hover {
     right: 18px;
   }
   .count-down img:last-child {
-    left: 20px;
+    left: 33px;
   }
   .purple-ticket {
     padding: 12px 8px;
   }
 }
 @media(max-width: 991px) {
+  .count-down img:last-child {
+    left: 23px;
+  }
   .slidecontainer {
     margin: 25px 0;
   }
@@ -891,6 +894,12 @@ button.connect-wallet:hover {
   }
 }
 @media(max-width: 769px) {
+  .count-down img:last-child {
+    left: 20px;
+  }
+  .count-down::before {
+    left: 21%;
+  }
   .footer-purple {
     padding: 0 0 0 20px;
     align-items: end;
