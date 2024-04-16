@@ -150,7 +150,7 @@ span.month {
   margin-bottom: 52px;
 }
 .text-footer {
-  padding: 35px 0 35px;
+  padding: 25px 0 25px;
 }
 .green-ticket {
   width: 100%;
@@ -539,7 +539,7 @@ table {
   text-align: center;
   color: #fff;
   margin-top: 30px;
-  margin-left: 3.5%;
+  margin-left: 7%;
 }
 .tool::after {
   content: '';
@@ -566,6 +566,19 @@ progress::-webkit-progress-bar {
 }
 progress::-webkit-progress-value {
   background-color: #7b3dff;
+}
+.important {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 75px 24px 24px;
+  border-radius: 24px;
+  background-color: #f5f1ff;
+}
+.footer-important {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 50px;
 }
 .slidecontainer,input[type="range" i] {
   -webkit-appearance: none;
@@ -806,6 +819,15 @@ button.connect-wallet:hover {
   }
 }
 @media(max-width: 991px) {
+  .flex-wallet img {
+    display: none;
+  }
+  .modal-cnt-wallets img{
+    display: flex;
+  }
+  .count-down-first-section {
+    gap: 50px;
+  }
   .count-down img:last-child {
     left: 23px;
   }
@@ -833,7 +855,7 @@ button.connect-wallet:hover {
   .guess-number {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 30px;
+    gap: 43px;
   }
   .count-down {
     min-width: unset;
