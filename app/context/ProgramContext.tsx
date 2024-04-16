@@ -14,19 +14,19 @@ import {
   useWallet,
 } from "@solana/wallet-adapter-react";
 import * as anchor from "@coral-xyz/anchor";
-import { IDL, PlayHalving } from "../../../target/types/play_halving";
+import { IDL, PlayHalving } from "../../target/types/play_halving";
 import {
   ConfirmedSignatureInfo,
   PublicKey,
   SystemProgram,
 } from "@solana/web3.js";
-import { bettingMint, bettingMintAddy } from "../../../client/config";
+import { bettingMint, bettingMintAddy } from "../../client/config";
 import { SolanaParser } from "@debridge-finance/solana-transaction-parser";
 import {
   getProgramConfigPDADef,
   getSecondStateAcc,
   getUserStateAcc,
-} from "../../../client/PDAs";
+} from "../../client/PDAs";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
@@ -91,7 +91,7 @@ const useTxnList = (): TxnSummary[] => {
         // }
       }
     };
-    setInterval(f, 5000);
+    setInterval(f, 2000);
   }, [connection, programConfigPDA]);
   return txnList;
 };
