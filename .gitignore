@@ -5,6 +5,9 @@ target/debug
 target/sbf-solana-solana
 target/*.json
 .anchor
+
+**/.vscode
+
 .DS_Store
 **/*.rs.bk
 node_modules
