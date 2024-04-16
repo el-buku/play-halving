@@ -62,41 +62,11 @@ body {
   text-align: center;
   color: #fff;
 }
-.count-down {
-  position: relative;
-  min-width: 160px;
-  padding: 30px 0;
-  display: inline-block;
-  text-transform: uppercase;
-  align-items: center;
-  font-size: 64px;
-  line-height: 1.63;
-  text-align: center;
-  color: #000;
-  border-radius: 20px;
-  border: solid 1px #dee4ee;
-  background-image: linear-gradient(to bottom, #f0f3f8, #f9fbff);
-}
 img.question-icon {
   max-width: 100px;
 }
-.count-down input {
-  background-color: unset;
-  border: 0;
-  text-align: center;
-  cursor: pointer;
-  max-width: 200px;
-}
 .green-ticket:hover {
   background-image: linear-gradient(to bottom, #55f09e 0%, #38b472 100%);
-}
-.count-down input:focus {
-  outline: unset;
-}
-.count-down input::placeholder {
-  color: #ff8c00;
-  font-size: 70px;
-  font-family: 'Poppins', 'sans-serif';
 }
 .guess-number {
   display: flex;
@@ -129,11 +99,6 @@ span.month {
   font-weight: 300;
   text-align: center;
   color: #000;
-}
-.count-down {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 }
 .count-down .discount-top {
   position: absolute;
@@ -664,17 +629,6 @@ button.close {
   text-align: left;
   color: #0f2517;
 }
-.count-down::before {
-  content: "";
-  position: absolute;
-  top: 41%;
-  left: 30%;
-  transform: translateY(-50%);
-  width: 71px;
-  height: 82px;
-  background-image: url('img/comment.png');
-  background-size: cover;
-}
 .hide-before::before {
   display: none;
 }
@@ -799,12 +753,78 @@ button.connect-wallet:hover {
     opacity: 0;
   }
 }
+.count-down {
+  position: relative;
+}
+.flip-container {
+  position: relative;
+  background-color: transparent;
+  width: 196px;
+  height: 160px;
+  perspective: 1000px;
+  cursor: pointer;
+}
+.card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 1s;
+  border: 0;
+  transform-style: preserve-3d;
+}
+.flip-container:hover .card {
+  transform: rotateY(180deg);
+}
+.front, .back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+}
+.back {
+  transform: rotateY(180deg);
+}
+.input-field {
+  position: relative;
+}
+.input-field input {
+  position: absolute;
+  left: 10%;
+  top: 15%;
+  max-width: 100px;
+  background-color: transparent;
+  border: 0;
+  font-size: 50px;
+  color: #fff;
+  text-align: center;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+input[type=number]:focus {
+  outline: unset;
+}
+.no-flip .card {
+  transition: none;
+  transform: rotateY(180deg);
+}
 @media(max-width: 1201px) {
+
+  .flip-container {
+    width: 160px;
+  }
   .important:first-child {
     margin-bottom: 20px;
-  }
-  .count-down::before {
-    left: 26%;
   }
   input[type="range" i], .slidecontainer {
     width: 500px;
@@ -826,7 +846,7 @@ button.connect-wallet:hover {
     right: 18px;
   }
   .count-down .discount-top:last-child {
-    left: 33px;
+    left: 34px;
   }
   .purple-ticket {
     padding: 12px 8px;
@@ -843,7 +863,7 @@ button.connect-wallet:hover {
     gap: 50px;
   }
   .count-down .discount-top:last-child {
-    left: 23px;
+    left: 36px;
   }
   .slidecontainer {
     margin: 25px 0;
@@ -931,10 +951,7 @@ button.connect-wallet:hover {
 }
 @media(max-width: 769px) {
   .count-down .discount-top:last-child {
-    left: 20px;
-  }
-  .count-down::before {
-    left: 21%;
+    left: 35px;
   }
   .footer-purple {
     padding: 0 0 0 20px;
@@ -1026,8 +1043,10 @@ button.connect-wallet:hover {
   }
 }
 @media(max-width: 400px) {
-  .count-down::before {
-    left: 37%;
+  .count-down {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   .live-frame img {
     max-width: 200px;

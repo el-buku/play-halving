@@ -91,26 +91,86 @@
               </div>
               <div class="guess-number">
                 <div class="count-down">
-                  <input type="number" class="numberInput" placeholder="" maxlength="3"/>
-                  <span class="month">Months</span>
+                  <div class="flip-container">
+                    <div class="card">
+                      <div class="front">
+                        <img src="img/com-question.png" alt="">
+                      </div>
+                      <div class="back">
+                        <div class="input-field">
+                          <input style="z-index: 99;" type="number" class="numberInput" placeholder="" maxlength="3" oninput="checkInput(this)"/>
+                          <img src="img/com-empty.png" alt="">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <span class="month">Month</span>
                 </div>
                 <div class="count-down">
-                  <input type="number" class="numberInput" placeholder="" maxlength="3"/>
-                  <span class="month">Days</span>
+                  <div class="flip-container">
+                    <div class="card">
+                      <div class="front">
+                        <img src="img/com-question.png" alt="">
+                      </div>
+                      <div class="back">
+                        <div class="input-field">
+                          <input style="z-index: 99;" type="number" class="numberInput" placeholder="" maxlength="3" oninput="checkInput(this)"/>
+                          <img src="img/com-empty.png" alt="">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <span class="month">Day</span>
                 </div>
                 <div class="count-down">
-                  <input type="number" class="numberInput" placeholder="" maxlength="3"/>
-                  <span class="month">Hours</span>
+                  <div class="flip-container">
+                    <div class="card">
+                      <div class="front">
+                        <img src="img/com-question.png" alt="">
+                      </div>
+                      <div class="back">
+                        <div class="input-field">
+                          <input style="z-index: 99;" type="number" class="numberInput" placeholder="" maxlength="3" oninput="checkInput(this)"/>
+                          <img src="img/com-empty.png" alt="">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <span class="month">Hour</span>
                   <img class="discount-top" src="img/20%25.png" alt=""/>
                 </div>
                 <div class="count-down">
-                  <input type="number" class="numberInput" placeholder="" maxlength="3"/>
-                  <span class="month">Minutes</span>
+                  <div class="flip-container">
+                    <div class="card">
+                      <div class="front">
+                        <img src="img/com-question.png" alt="">
+                      </div>
+                      <div class="back">
+                        <div class="input-field">
+                          <input style="z-index: 99;" type="number" class="numberInput" placeholder="" maxlength="3" oninput="checkInput(this)"/>
+                          <img src="img/com-empty.png" alt="">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <span class="month">Minute</span>
                   <img class="discount-top" src="img/50%25.png" alt=""/>
                 </div>
                 <div class="count-down">
-                  <input type="number" class="numberInput" placeholder="" maxlength="3"/>
-                  <span class="month">Seconds</span>
+                  <div class="flip-container">
+                    <div class="card">
+                      <div class="front">
+                        <img src="img/com-question.png" alt="">
+                      </div>
+                      <div class="back">
+                        <div class="input-field">
+                          <input style="z-index: 99;" type="number" class="numberInput" placeholder="" maxlength="3" oninput="checkInput(this)"/>
+                          <img src="img/com-empty.png" alt="">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <span class="month">Second</span>
                   <img class="discount-top" style="right: 14%; max-width: 142px;" src="img/prize-50.png" alt="Get big prize 100k USDT"/>
                 </div>
               </div>
@@ -137,10 +197,7 @@
               </div>
               <div class="last-info">
                 <img src="img/fi-rr-info.svg" alt="" />
-                <span class="last-purple-text"
-                  >For Each 5 played tickets accquired you will receive 3 extra
-                  bets for free</span
-                >
+                <span class="last-purple-text">For Each 5 played tickets accquired you will receive 3 extrabets for free</span>
               </div>
             </div>
           </div>
@@ -439,6 +496,14 @@
         });
       });
 
+      function checkInput(input) {
+        let flipContainer = input.closest('.flip-container');
+        if (input.value.trim() !== "") {
+          flipContainer.classList.add("no-flip");
+        } else {
+          flipContainer.classList.remove("no-flip");
+        }
+      }
     </script>
   </body>
 </html>
