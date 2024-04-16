@@ -68,6 +68,7 @@ body {
   padding: 30px 0;
   display: inline-block;
   text-transform: uppercase;
+  align-items: center;
   font-size: 64px;
   line-height: 1.63;
   text-align: center;
@@ -76,11 +77,15 @@ body {
   border: solid 1px #dee4ee;
   background-image: linear-gradient(to bottom, #f0f3f8, #f9fbff);
 }
+img.question-icon {
+  max-width: 100px;
+}
 .count-down input {
   background-color: unset;
   border: 0;
   text-align: center;
   cursor: pointer;
+  max-width: 200px;
 }
 .green-ticket:hover {
   background-image: linear-gradient(to bottom, #55f09e 0%, #38b472 100%);
@@ -130,7 +135,7 @@ span.month {
   flex-direction: column;
   gap: 12px;
 }
-.count-down img {
+.count-down .discount-top {
   position: absolute;
   top: -70px;
   right: 25px;
@@ -741,7 +746,7 @@ button.connect-wallet:hover {
   border-radius: 0 0 0 24px;
 }
 .toast-msg {
-  display: flex;
+  display: none;
   gap: 10px;
   position: fixed;
   top: 10%;
@@ -750,7 +755,13 @@ button.connect-wallet:hover {
   padding: 10px 20px;
   border-radius: 5px;
   opacity: 0;
-    animation: slideIn 0.5s ease-in-out forwards, fadeOut 0.5s 2.5s ease-in-out forwards;
+  animation: slideIn 0.5s ease-in-out forwards, fadeOut 0.5s 2.5s ease-in-out forwards;
+}
+.write {
+  display: none;
+}
+.input-field {
+  z-index: 1;
 }
 .error-message {
   color: #be0000;
@@ -789,6 +800,9 @@ button.connect-wallet:hover {
   }
 }
 @media(max-width: 1201px) {
+  .important:first-child {
+    margin-bottom: 20px;
+  }
   .count-down::before {
     left: 26%;
   }
@@ -805,13 +819,13 @@ button.connect-wallet:hover {
     min-width: 130px;
     font-size: 52px;
   }
-  .count-down img {
+  .count-down .discount-top {
     width: 90px;
     position: absolute;
     top: -39px;
     right: 18px;
   }
-  .count-down img:last-child {
+  .count-down .discount-top:last-child {
     left: 33px;
   }
   .purple-ticket {
@@ -828,7 +842,7 @@ button.connect-wallet:hover {
   .count-down-first-section {
     gap: 50px;
   }
-  .count-down img:last-child {
+  .count-down .discount-top:last-child {
     left: 23px;
   }
   .slidecontainer {
@@ -916,7 +930,7 @@ button.connect-wallet:hover {
   }
 }
 @media(max-width: 769px) {
-  .count-down img:last-child {
+  .count-down .discount-top:last-child {
     left: 20px;
   }
   .count-down::before {
@@ -1022,7 +1036,7 @@ button.connect-wallet:hover {
     width: 100%;
     max-width: unset;
   }
-  .count-down img {
+  .count-down .discount-top {
     top: -35px;
     left: 34% !important;
   }
@@ -1031,7 +1045,7 @@ button.connect-wallet:hover {
   }
 }
 @media(max-width: 350px) {
-  .count-down img {
+  .count-down .discount-top {
     left: 29% !important;
   }
   .game-title {

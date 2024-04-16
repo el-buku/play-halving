@@ -101,17 +101,17 @@
                 <div class="count-down">
                   <input type="number" class="numberInput" placeholder="" maxlength="3"/>
                   <span class="month">Hours</span>
-                  <img src="img/20%25.png" alt=""/>
+                  <img class="discount-top" src="img/20%25.png" alt=""/>
                 </div>
                 <div class="count-down">
                   <input type="number" class="numberInput" placeholder="" maxlength="3"/>
                   <span class="month">Minutes</span>
-                  <img src="img/50%25.png" alt=""/>
+                  <img class="discount-top" src="img/50%25.png" alt=""/>
                 </div>
                 <div class="count-down">
                   <input type="number" class="numberInput" placeholder="" maxlength="3"/>
                   <span class="month">Seconds</span>
-                  <img style="right: 14%; max-width: 142px;" src="img/prize-50.png" alt="Get big prize 100k USDT"/>
+                  <img class="discount-top" style="right: 14%; max-width: 142px;" src="img/prize-50.png" alt="Get big prize 100k USDT"/>
                 </div>
               </div>
             </div>
@@ -282,7 +282,7 @@
             <div class="important">
               playhalving.com is licensed and
               regulated by the Government of the Autonomous Island of Anjouan, Union of Comoros and
-              operates under License No. ALSI-062403015-F16. playhalving.com has passed all regulatory compliance
+              operates under License No. <span style="color: #7b3dff;">ALSI-062403015-F16</span>. playhalving.com has passed all regulatory compliance
               and is legally authorised to conduct gaming operations for any and all games of chance and
               wagering.
               <br>
@@ -291,7 +291,7 @@
             </div>
           </div>
           <div class="col-xl-5 col-md-12">
-            <div class="important">
+            <div class="important mb-0">
             playhalving.com is owned and operated by ChipFling Limited.
             registration number: ALSI-062403015-F16,
             <br>
@@ -299,7 +299,7 @@
             Registered address: Autonomous Island of Anjouan.
             <br>
             <br>
-            Contact us hello@playhalving.com.
+            Contact us <span style="color: #7b3dff;">hello@playhalving.com.</span>
           </div>
           </div>
         </div>
@@ -404,45 +404,40 @@
         updateDivPosition(tempSliderValue);
         sliderEl3.style.background = `linear-gradient(to right, #7b3dff ${progressPercent}%, #ccc 0%)`;
       });
-      sliderEl3.addEventListener("mouseout", () => {
-        relativeDiv.style.display = "none";
-      });
+      // sliderEl3.addEventListener("mouseout", () => {
+      //   relativeDiv.style.display = "none";
+      // });
 
-      // Get all elements with the class 'count-down'
-      var countDownElements = document.querySelectorAll('.count-down');
 
-      // Loop through each element and add event listeners
+      let countDownElements = document.querySelectorAll('.count-down');
+
       countDownElements.forEach(function(element) {
         element.addEventListener('click', function() {
-          this.classList.toggle('hide-before'); // Toggle the 'hide-before' class on click
+          this.classList.toggle('hide-before');
         });
 
         element.addEventListener('mouseleave', function() {
-          this.classList.add('hide-before'); // Add the 'hide-before' class on mouse leave
+          this.classList.add('hide-before');
         });
       });
 
 
-      var numberInputs = document.querySelectorAll('.numberInput');
+      let numberInputs = document.querySelectorAll('.numberInput');
 
-      // Loop through each element and add event listeners
       numberInputs.forEach(function(input) {
         input.addEventListener('input', function() {
-          var inputValue = this.value;
+          let inputValue = this.value;
 
-          // Ensure that the input value is a valid number
           if (isNaN(inputValue)) {
             this.value = '';
             return;
           }
 
-          // Limit the input value to 3 digits
           if (inputValue.length > 3) {
             this.value = inputValue.slice(0, 3);
           }
         });
       });
-
 
     </script>
   </body>
