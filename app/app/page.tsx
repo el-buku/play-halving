@@ -2,13 +2,16 @@ import Image from "next/image";
 import {
   WalletDisconnectButtonDynamic,
   WalletMultiButtonDynamic,
-} from "@/components/wallet-multi-button";
+} from "@/components/WalletMultiButton";
 
 import React from "react";
 
 //@ts-ignore
 import appHtml from "./homepage.html";
+import { Homepage } from "@/components/Homepage";
+import { seeds } from "../../client/config";
 
 export default function Home() {
-  return <html dangerouslySetInnerHTML={{ __html: appHtml }}></html>;
+  console.log(seeds);
+  return <Homepage />;
 }

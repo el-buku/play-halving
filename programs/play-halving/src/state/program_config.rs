@@ -2,46 +2,32 @@ use anchor_derive_space::InitSpace;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Transfer;
 
-use crate::constants::{BET_FEE, BETS_FREE_BUNDLE, MINUTES_RETURN_FEE_PC, PAID_BETS_FOR_FREE_BUNDLE, WINNER_MILLISECONDS_REWARD};
 use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX};
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq, InitSpace)]
+pub struct MarkedHalving {
+    pub halving_timestamp: i64,
+    pub marked_at: i64,
+}
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq, InitSpace)]
 pub enum ProgramStatus {
     Running,
     BettingPaused,
-    Done(i64),
-}
-
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq, InitSpace)]
-pub enum WinnerReward {
-    Millisecond(u64),
-    // rebates in %pct
-    Second(u8),
-    // rebates in %pct
-    Minute(u8),
+    ClaimsOpen(MarkedHalving),
+    Closed(MarkedHalving),
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq, InitSpace)]
 pub struct ProgramSettings {
     pub bet_fee: u64,
-    pub grand_winner_prize: WinnerReward,
-    pub winner_rebate_2nd: WinnerReward,
-    pub winner_rebate_3rd: WinnerReward,
+    pub grand_rewards_pool: u64,
+    pub max_winners_paid: u8,
+    pub hour_return_pc: u8,
+    pub minute_return_pc: u8,
     pub bets_free_bundle: u8,
     pub paid_bets_for_free_bundle: u8,
-}
-
-impl Default for ProgramSettings {
-    fn default() -> Self {
-        Self {
-            bet_fee: BET_FEE,
-            grand_winner_prize: WinnerReward::Millisecond(WINNER_MILLISECONDS_REWARD),
-            winner_rebate_2nd: WinnerReward::Minute(MINUTES_RETURN_FEE_PC),
-            winner_rebate_3rd: WinnerReward::Second(MINUTES_RETURN_FEE_PC),
-            bets_free_bundle: BETS_FREE_BUNDLE,
-            paid_bets_for_free_bundle: PAID_BETS_FOR_FREE_BUNDLE,
-        }
-    }
+    pub claim_window_hours: u8,
 }
 
 #[account]
@@ -56,15 +42,11 @@ pub struct ProgramConfig {
     pub status: ProgramStatus,
     pub settings: ProgramSettings,
 
-    pub total_bets_sold: u64,
+    pub total_bets_placed: u64,
     pub program_config_bump: u8,
-}
-
-#[event]
-pub struct TransferEvent {
-    from: Pubkey,
-    to: Pubkey,
-    amount: u64,
+    #[max_len(50)]
+    pub winners: Vec<Pubkey>,
+    pub winners_paid: u8,
 }
 
 impl ProgramConfig {
@@ -83,64 +65,40 @@ impl ProgramConfig {
         self.program_vault = program_vault;
         self.status = ProgramStatus::Running;
         self.settings = settings;
-        self.total_bets_sold = 0;
-        self.program_config_bump = program_config_bump
+        self.total_bets_placed = 0;
+        self.program_config_bump = program_config_bump;
+        self.winners = Vec::new();
+        self.winners_paid = 0
     }
 
-    pub fn transfer_from_signer<'info>(
+    pub fn is_claiming_window_open(&self, now: i64) -> bool {
+        match self.status {
+            ProgramStatus::ClaimsOpen(marked) => {
+                now <= marked.marked_at + self.settings.claim_window_hours as i64 * 60 * 60
+            }
+            _ => false,
+        }
+    }
+
+    pub fn has_winners(&self) -> bool {
+        self.winners
+            .iter()
+            .any(|winner| winner != &Pubkey::default())
+    }
+
+    pub fn transfer_signed_out<'info>(
         &self,
-        from: AccountInfo<'info>,
-        to: AccountInfo<'info>,
-        authority: &Signer<'info>,
+        accounts: Transfer<'info>,
         token_program: AccountInfo<'info>,
         amount: u64,
     ) -> Result<()> {
-        let context = CpiContext::new(
-            token_program,
-            Transfer {
-                from: from.clone(),
-                to: to.clone(),
-                authority: authority.to_account_info(),
-            },
-        );
-        // .with_signer(authority);
+        let authority_seeds: &[&[&[u8]]] = &[&[
+            SEEDS_PREFIX.as_bytes(),
+            PROGRAM_CONFIG.as_bytes(),
+            &[self.program_config_bump],
+        ]];
+        let context = CpiContext::new(token_program, accounts).with_signer(authority_seeds);
 
         anchor_spl::token::transfer(context, amount)
-        //     .unwrap();
-        // emit!(TransferEvent {
-        //     from: from.key.clone(),
-        //     to: to.key.clone(),
-        //     amount,
-        // });
-        // Ok(())
-    }
-    pub fn transfer_tokens_out<'info>(
-        &self,
-        from: AccountInfo<'info>,
-        to: AccountInfo<'info>,
-        authority: AccountInfo<'info>,
-        token_program: AccountInfo<'info>,
-        amount: u64,
-    ) -> Result<()> {
-        let authority_seeds: &[&[&[u8]]] =
-            &[&[SEEDS_PREFIX.as_bytes(),
-                PROGRAM_CONFIG.as_bytes(), &[self.program_config_bump]]];
-        let context = CpiContext::new(
-            token_program,
-            Transfer {
-                from: from.clone(),
-                to: to.clone(),
-                authority: authority.to_account_info(),
-            },
-        ).with_signer(authority_seeds);
-
-        anchor_spl::token::transfer(context, amount)
-        // .unwrap();
-        // emit!(TransferEvent {
-        //     from: from.key.clone(),
-        //     to: to.key.clone(),
-        //     amount,
-        // });
-        // Ok(())
     }
 }
