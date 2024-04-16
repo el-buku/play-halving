@@ -25,7 +25,11 @@ import { getRandomTimestamp, randomBetween } from "../client/utils";
 
 const ANCHOR_TOML_PATH = join(__dirname, "../Anchor.toml");
 
-const adminWallet = Keypair.generate();
+import { loadWalletKey } from "../client/loadKp";
+
+export const adminWallet = loadWalletKey(__dirname + "/../deployment.json");
+// const adminWallet = Keypair.generate();
+
 const mintKp = Keypair.generate();
 const buyers = Array.from({ length: 100 }, (_, i) => {
   const kp = Keypair.generate();
@@ -109,18 +113,19 @@ describe("play-halving", () => {
     true
   );
 
+  const CLAIMING_WINDOW_SECONDS = 90;
   // this is how you get anchor workspace account types
   type ProgramSettings =
     anchor.IdlAccounts<PlayHalving>["programConfig"]["settings"];
   const programTestSettings: ProgramSettings = {
     betFee: new BN(5),
     grandRewardsPool: new BN(100000),
-    maxWinnersPaid: 10,
+    minTicketsSold: new BN(20000),
     hourReturnPc: 25,
     minuteReturnPc: 50,
     betsFreeBundle: 2,
     paidBetsForFreeBundle: 5,
-    claimWindowHours: (1 / 60 / 60) * 30, //30 sec for testing
+    claimWindowHours: 1, //in sec for testing
   };
   it("Is initialized!", async () => {
     const tx = await program.methods
@@ -211,5 +216,113 @@ describe("play-halving", () => {
         // console.log("buy tickets signature", tx);
       })
     );
+  });
+  it("Lets admin pause betting", async () => {
+    const tx = await program.methods
+      .pauseBetting()
+      .accounts({
+        admin: adminWallet.publicKey,
+        programConfig: programConfigPDA,
+        systemProgram: SystemProgram.programId,
+      })
+      .signers([adminWallet])
+      .rpc();
+
+    // Confirm transaction
+    const r = await connection.confirmTransaction(tx, "confirmed");
+    expect(r.value.err).to.be.null;
+  });
+  it("Lets admin mark a winner timestamp", async () => {
+    let tstmp = getRandomTimestamp();
+    const tx = await program.methods
+      .markHalving(new anchor.BN(tstmp))
+      .accounts({
+        admin: adminWallet.publicKey,
+        secondStateAcc: getSecondStateAcc(tstmp, program.programId)[0],
+        programVault,
+        programConfig: programConfigPDA,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .signers([adminWallet])
+      .rpc();
+
+    // Confirm transaction
+    const r = await connection.confirmTransaction(tx, "confirmed");
+    expect(r.value.err).to.be.null;
+  });
+  it("Lets users claim rewards and checks their rewards", async () => {
+    // Loop through each buyer
+    for (let buyer of buyers) {
+      // Get the buyer's initial rewards before claiming
+      // const initialRewards = await getBuyerRewards(buyer);
+      const ata = await getAssociatedTokenAddress(
+        bettingMint,
+        buyer.kp.publicKey,
+        false
+      );
+      // Claim rewards
+      const tx = await program.methods
+        .claim()
+        .accounts({
+          buyer: buyer.kp.publicKey,
+          buyerAta: ata,
+          programConfig: programConfigPDA,
+          programVault: programVault,
+          bettingMint: bettingMint,
+          userStateAcc: getUserStateAcc(
+            buyer.kp.publicKey,
+            program.programId
+          )[0],
+          tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        })
+        .signers([buyer.kp])
+        .rpc();
+
+      // Confirm transaction
+      const r = await connection.confirmTransaction(tx, "confirmed");
+      expect(r.value.err).to.be.null;
+      //TODO actually check rewards distrib
+      // Get the buyer's rewards after claiming
+      // const finalRewards = await getBuyerRewards(buyer);
+
+      // // Check if the buyer's rewards have been correctly updated
+      // expect(finalRewards).to.be.greaterThan(initialRewards);
+    }
+  });
+
+  it("Lets admins close the program and withdraw rewards", async () => {
+    const ata = await getOrCreateAssociatedTokenAccount(
+      connection,
+      adminWallet,
+      bettingMint,
+      adminWallet.publicKey,
+      false
+    );
+
+    let ataAmount1 = await connection.getTokenAccountBalance(ata.address);
+    // Claim rewards
+    const tx = await program.methods
+      .close()
+      .accounts({
+        admin: adminWallet.publicKey,
+        adminAta: ata.address,
+        programConfig: programConfigPDA,
+        programVault: programVault,
+        bettingMint: bettingMint,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+      })
+      .signers([adminWallet])
+      .rpc();
+    const r = await connection.confirmTransaction(tx, "confirmed");
+    // let ataAmount2 = await connection.getTokenAccountBalance(ata.address);
+    // expect(ataAmount2.value.uiAmount).to.be.greaterThan(
+    //   ataAmount1.value.uiAmount
+    // );
+    expect(r.value.err).to.be.null;
   });
 });

@@ -9,7 +9,7 @@ export type ProgramSettings =
 export const programSettings: ProgramSettings = {
   betFee: new BN(5),
   grandRewardsPool: new BN(100000),
-  maxWinnersPaid: 10,
+  minTicketsSold: new BN(25000),
   hourReturnPc: 25,
   minuteReturnPc: 50,
   betsFreeBundle: 2,

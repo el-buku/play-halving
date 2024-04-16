@@ -1,4 +1,5 @@
 use anchor_lang::prelude::*;
+use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{Mint, Token, TokenAccount, Transfer};
 
 use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX};
@@ -36,6 +37,7 @@ pub struct CloseProgram<'info> {
     pub clock: Sysvar<'info, Clock>,
     pub system_program: Program<'info, System>,
     pub token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
 }
 
 impl<'info> CloseProgram<'info> {

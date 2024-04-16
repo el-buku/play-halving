@@ -22,7 +22,7 @@ pub enum ProgramStatus {
 pub struct ProgramSettings {
     pub bet_fee: u64,
     pub grand_rewards_pool: u64,
-    pub max_winners_paid: u8,
+    pub min_tickets_sold: u64,
     pub hour_return_pc: u8,
     pub minute_return_pc: u8,
     pub bets_free_bundle: u8,
@@ -43,6 +43,8 @@ pub struct ProgramConfig {
     pub settings: ProgramSettings,
 
     pub total_bets_placed: u64,
+    pub total_tickets_sold: u64,
+
     pub program_config_bump: u8,
     #[max_len(50)]
     pub winners: Vec<Pubkey>,
@@ -80,10 +82,8 @@ impl ProgramConfig {
         }
     }
 
-    pub fn has_winners(&self) -> bool {
-        self.winners
-            .iter()
-            .any(|winner| winner != &Pubkey::default())
+    pub fn has_min_tickets(&self) -> bool {
+        self.settings.min_tickets_sold <= self.total_tickets_sold
     }
 
     pub fn transfer_signed_out<'info>(

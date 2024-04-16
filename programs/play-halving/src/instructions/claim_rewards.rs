@@ -94,8 +94,7 @@ impl<'info> ClaimRewards<'info> {
         let mint = &ctx.accounts.betting_mint;
         let e_decimals = 10_u64.pow(mint.decimals as u32);
         let ticket_price = settings.bet_fee * e_decimals;
-        let per_winner =
-            settings.grand_rewards_pool / settings.max_winners_paid as u64 * e_decimals;
+
         let transfer_acc_infos = Transfer {
             from: program_vault.to_account_info(),
             to: buyer_ata.to_account_info(),
@@ -125,8 +124,8 @@ impl<'info> ClaimRewards<'info> {
                 let user_state = &mut ctx.accounts.user_state_acc;
                 // err if user has reclaimed
                 require!(!user_state.has_reclaimed, ContractError::AlreadyClaimed);
-                if !program_config.has_winners() {
-                    msg!("no winners, returning bet");
+                if !program_config.has_min_tickets() {
+                    msg!("not enough tickets sold, returning bet");
                     // we return all bets
                     let paid_tickets = user_state.total_paid_tickets;
                     let amount = paid_tickets * ticket_price;
@@ -136,37 +135,42 @@ impl<'info> ClaimRewards<'info> {
                         reclaim_result: ClaimResult::Return,
                         user: buyer.key(),
                     });
-                } else if program_config.winners.contains(buyer.key) {
-                    msg!("found big winner");
-                    let amount = per_winner;
-                    perform_transfer(amount);
-                    program_config.winners_paid += 1;
-                    emit!(ClaimEvent {
-                        amount,
-                        reclaim_result: ClaimResult::Winner,
-                        user: buyer.key(),
-                    });
                 } else {
-                    // we pay back bets matching minutes and hours
-                    let rebates_total = user_state.get_rebates_amount(
-                        program_config.settings,
-                        halving_timestamp,
-                        ticket_price,
-                    );
-                    let winners_left_to_pay =
-                        program_config.winners.len() as u8 - program_config.winners_paid;
-                    let min_amount = winners_left_to_pay as u64 * per_winner;
-                    let amount = if program_vault.amount - rebates_total >= min_amount {
-                        rebates_total
+                    let per_winner = settings.grand_rewards_pool
+                        / program_config.winners.len() as u64
+                        * e_decimals;
+                    if program_config.winners.contains(buyer.key) {
+                        msg!("found big winner");
+                        let amount = per_winner;
+                        perform_transfer(amount);
+                        program_config.winners_paid += 1;
+                        emit!(ClaimEvent {
+                            amount,
+                            reclaim_result: ClaimResult::Winner,
+                            user: buyer.key(),
+                        });
                     } else {
-                        program_vault.amount - min_amount
-                    };
-                    perform_transfer(amount);
-                    emit!(ClaimEvent {
-                        amount: 0_u64,
-                        reclaim_result: ClaimResult::Rebate,
-                        user: buyer.key(),
-                    });
+                        // we pay back bets matching minutes and hours
+                        let rebates_total = user_state.get_rebates_amount(
+                            program_config.settings,
+                            halving_timestamp,
+                            ticket_price,
+                        );
+                        let winners_left_to_pay =
+                            program_config.winners.len() as u8 - program_config.winners_paid;
+                        let min_amount = winners_left_to_pay as u64 * per_winner;
+                        let amount = if program_vault.amount - rebates_total >= min_amount {
+                            rebates_total
+                        } else {
+                            program_vault.amount - min_amount
+                        };
+                        perform_transfer(amount);
+                        emit!(ClaimEvent {
+                            amount,
+                            reclaim_result: ClaimResult::Rebate,
+                            user: buyer.key(),
+                        });
+                    }
                 }
                 user_state.has_reclaimed = true;
                 Ok(())

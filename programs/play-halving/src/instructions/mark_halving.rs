@@ -57,20 +57,12 @@ impl<'info> MarkHalvingTimestamp<'info> {
         if let Some(winners) = second_state_acc.get_winners() {
             if program_vault.amount >= settings.grand_rewards_pool {
                 program_config.winners = winners
-                    .into_iter()
-                    .take(settings.max_winners_paid as usize)
-                    .collect();
             }
         }
         program_config.status = ProgramStatus::ClaimsOpen(MarkedHalving {
             halving_timestamp,
             marked_at: clock.unix_timestamp.clone(),
         });
-        msg!(
-            "Halving Done: Timestamp:{} - Has winners: {}",
-            halving_timestamp,
-            program_config.has_winners()
-        );
         Ok(())
     }
 }
