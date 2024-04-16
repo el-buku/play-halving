@@ -63,6 +63,7 @@ body {
   color: #fff;
 }
 .count-down {
+  position: relative;
   min-width: 160px;
   padding: 30px 0;
   display: inline-block;
@@ -128,7 +129,6 @@ span.month {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  position: relative;
 }
 .count-down img {
   position: absolute;
@@ -646,10 +646,6 @@ button.close {
   text-align: left;
   color: #0f2517;
 }
-.count-down {
-  position: relative; /* Make sure the container is positioned relative */
-  width: 300px;
-}
 .count-down::before {
   content: ""; /* Ensure there is content to apply styles */
   position: absolute; /* Position the image relative to the container */
@@ -660,6 +656,12 @@ button.close {
   height: 82px;
   background-image: url('img/comment.png'); /* Set the URL of the placeholder image */
   background-size: cover; /* Adjust the background size as needed */
+}
+.hide-before::before {
+  display: none; /* Hide the ::before pseudo-element */
+}
+.count-down:hover::before {
+  background-image: unset;
 }
 button.connect-wallet:hover {
   background-color: #492ac1;
@@ -721,9 +723,6 @@ button.connect-wallet:hover {
   letter-spacing: normal;
   text-align: center;
   color: #000;
-}
-.count-down input[type="text"]:not(:placeholder-shown) + .input-placeholder::before {
-  opacity: 0;
 }
 .flex-wallet img {
   border-radius: 0 0 0 24px;

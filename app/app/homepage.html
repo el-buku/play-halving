@@ -77,35 +77,31 @@
               </div>
               <div class="guess-number">
                 <div class="count-down">
-                  <input type="number" placeholder="" />
+                  <input type="number" class="numberInput" placeholder="" maxlength="3"/>
                   <span class="month">Months</span>
                 </div>
                 <div class="count-down">
-                  <input type="number" placeholder="" />
+                  <input type="number" class="numberInput" placeholder="" maxlength="3"/>
                   <span class="month">Days</span>
                 </div>
                 <div class="count-down">
-                  <input type="number" placeholder="" />
+                  <input type="number" class="numberInput" placeholder="" maxlength="3"/>
                   <span class="month">Hours</span>
                 </div>
                 <div class="count-down">
-                  <input type="number" placeholder="" />
+                  <input type="number" class="numberInput" placeholder="" maxlength="3"/>
                   <span class="month">Minutes</span>
                   <img src="img/20%25.png" alt=""/>
                 </div>
                 <div class="count-down">
-                  <input type="number" placeholder="" />
+                  <input type="number" class="numberInput" placeholder="" maxlength="3"/>
                   <span class="month">Seconds</span>
                   <img src="img/50%25.png" alt=""/>
                 </div>
                 <div class="count-down">
-                  <input type="number" placeholder=""/>
+                  <input type="number" class="numberInput" placeholder="" maxlength="3"/>
                   <span class="month">M.Secs</span>
-                  <img
-                    style="right: 0; max-width: 160px;"
-                    src="img/100k.png"
-                    alt="Get big prize 100k USDT"
-                  />
+                  <img style="right: 0; max-width: 160px;" src="img/100k.png" alt="Get big prize 100k USDT"/>
                 </div>
               </div>
             </div>
@@ -379,17 +375,42 @@
         relativeDiv.style.display = "none";
       });
 
-      const inputField = document.querySelector('.count-down input[type="text"]');
-      const placeholder = document.querySelector('.count-down .input-placeholder');
+      // Get all elements with the class 'count-down'
+      var countDownElements = document.querySelectorAll('.count-down');
 
-      inputField.addEventListener('input', () => {
+      // Loop through each element and add event listeners
+      countDownElements.forEach(function(element) {
+        element.addEventListener('click', function() {
+          this.classList.toggle('hide-before'); // Toggle the 'hide-before' class on click
+        });
 
-        if (inputField.value.trim() === '') {
-          placeholder.style.opacity = 1;
-        } else {
-          placeholder.style.opacity = 0;
-        }
+        element.addEventListener('mouseleave', function() {
+          this.classList.add('hide-before'); // Add the 'hide-before' class on mouse leave
+        });
       });
+
+
+      var numberInputs = document.querySelectorAll('.numberInput');
+
+      // Loop through each element and add event listeners
+      numberInputs.forEach(function(input) {
+        input.addEventListener('input', function() {
+          var inputValue = this.value;
+
+          // Ensure that the input value is a valid number
+          if (isNaN(inputValue)) {
+            this.value = '';
+            return;
+          }
+
+          // Limit the input value to 3 digits
+          if (inputValue.length > 3) {
+            this.value = inputValue.slice(0, 3);
+          }
+        });
+      });
+
+
     </script>
   </body>
 </html>
