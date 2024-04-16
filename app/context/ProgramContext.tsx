@@ -20,13 +20,13 @@ import {
   PublicKey,
   SystemProgram,
 } from "@solana/web3.js";
-import { bettingMint, bettingMintAddy } from "../../client/config";
+import { bettingMint, bettingMintAddy } from "../../sdk/config";
 import { SolanaParser } from "@debridge-finance/solana-transaction-parser";
 import {
   getProgramConfigPDADef,
   getSecondStateAcc,
   getUserStateAcc,
-} from "../../client/PDAs";
+} from "../../sdk/PDAs";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,

@@ -18,14 +18,14 @@ import {
   getSecondStateAcc,
   getProgramConfigPDADef,
   getUserStateAcc,
-} from "../client/PDAs";
+} from "../sdk/PDAs";
 import { assert, expect } from "chai";
-import { bettingMint } from "../client/config";
-import { getRandomTimestamp, randomBetween } from "../client/utils";
+import { bettingMint } from "../sdk/config";
+import { getRandomTimestamp, randomBetween } from "../sdk/utils";
 
 const ANCHOR_TOML_PATH = join(__dirname, "../Anchor.toml");
 
-import { loadWalletKey } from "../client/loadKp";
+import { loadWalletKey } from "../sdk/loadKp";
 
 export const adminWallet = loadWalletKey(__dirname + "/../deployment.json");
 // const adminWallet = Keypair.generate();

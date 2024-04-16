@@ -8,7 +8,7 @@ import React from "react";
 //@ts-ignore
 import appHtml from "./homepage.html";
 // import { Homepage } from "@/components/Homepage";
-import { seeds } from "../../client/config";
+import { seeds } from "../../sdk/config";
 import { Homepage } from "@/components/layout/Homepage";
 
 export default function Home() {
