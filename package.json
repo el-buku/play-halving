@@ -1,12 +1,7 @@
 {
     "scripts": {
         "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
-        "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check",
-        "crank:init":"ts-node client/crank/init.ts",
-        "crank:pause":"ts-node client/crank/pause.ts",
-        "crank:markHalving":"ts-node client/crank/markHalving.ts",
-        "crank:":"ts-node client/crank/close.ts"
-
+        "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check"
     },
     "dependencies": {
         "@coral-xyz/anchor": "^0.29.0",

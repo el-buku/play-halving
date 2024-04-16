@@ -21,7 +21,7 @@ pub enum ProgramStatus {
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq, InitSpace)]
 pub struct ProgramSettings {
     pub bet_fee: u64,
-    pub grand_rewards_pool: u64, // 100_000
+    pub grand_rewards_pool: u64,
     pub max_winners_paid: u8,
     pub hour_return_pc: u8,
     pub minute_return_pc: u8,
