@@ -27,15 +27,6 @@ const sToB = (seed) => Buffer.from(seed);
 const millisToB = (ts: number) =>
   new anchor.BN(ts).toArrayLike(Buffer, "be", 2);
 
-const numbersJStoRPC = <T extends Record<string, unknown>>(
-  o: T
-): Record<string, unknown> =>
-  Object.fromEntries(
-    Object.entries(o).map(([key, value]) => [
-      key,
-      typeof value === "number" ? new BN(value) : value,
-    ])
-  );
 type PDADef = [PublicKey, number];
 const getUserStateAcc = async (
   user: PublicKey,
