@@ -3,70 +3,49 @@ import { BN, Program } from "@coral-xyz/anchor";
 import { PlayHalving } from "../target/types/play_halving";
 
 import { join } from "path";
-import {
-  Keypair,
-  PublicKey,
-  SystemProgram,
-  LAMPORTS_PER_SOL,
-} from "@solana/web3.js";
+import { Keypair, SystemProgram, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import {
   createMint,
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
+import { getProgramConfigPDADef } from "../client/utils";
+import { assert, expect } from "chai";
 
 const ANCHOR_TOML_PATH = join(__dirname, "../Anchor.toml");
 
-const seeds = {
-  SEEDS_PREFIX: "PLAY_HALVING_____",
-  PROGRAM_CONFIG: "PROGRAM_CONFIG",
-  MILLISECOND_STATE: "MILLISECOND_STATE",
-  USER_STATE: "USER_STATE",
-};
-const sToB = (seed) => Buffer.from(seed);
-const millisToB = (ts: number) =>
-  new anchor.BN(ts).toArrayLike(Buffer, "be", 2);
-
-type PDADef = [PublicKey, number];
-const getUserStateAcc = async (
-  user: PublicKey,
-  programId: PublicKey
-): Promise<PDADef> => {
-  return PublicKey.findProgramAddressSync(
-    [sToB(seeds.SEEDS_PREFIX), sToB(seeds.USER_STATE), user.toBuffer()],
-    programId
-  );
-};
-const getMillisecondStateAcc = async (
-  timestamp: number,
-  programId: PublicKey
-): Promise<PDADef> => {
-  return PublicKey.findProgramAddressSync(
-    [
-      sToB(seeds.SEEDS_PREFIX),
-      sToB(seeds.MILLISECOND_STATE),
-      millisToB(timestamp),
-    ],
-    programId
-  );
-};
-
 const adminWallet = Keypair.generate();
-const buyer = Keypair.generate();
+const mintKp = Keypair.generate();
+const buyers = Array.from({ length: 100 }, (_, i) => {
+  return Keypair.generate();
+});
 
-describe("play-halving", async () => {
+describe("play-halving", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  const provider = anchor.AnchorProvider.env();
+  anchor.setProvider(provider);
   const program = anchor.workspace.PlayHalving as Program<PlayHalving>;
   const connection = program.provider.connection;
-  connection.requestAirdrop(adminWallet.publicKey, LAMPORTS_PER_SOL * 8);
-  const bettingMint = await createMint(
-    connection,
-    adminWallet,
-    adminWallet.publicKey,
-    adminWallet.publicKey,
-    2
-  );
+
+  // tests prelude
+  let bettingMint: anchor.web3.PublicKey = mintKp.publicKey;
+  before(async () => {
+    await connection.confirmTransaction(
+      await provider.connection.requestAirdrop(
+        adminWallet.publicKey,
+        10 * LAMPORTS_PER_SOL
+      )
+    );
+    bettingMint = await createMint(
+      connection,
+      adminWallet,
+      adminWallet.publicKey,
+      adminWallet.publicKey,
+      2,
+      mintKp
+    );
+  });
+
   const subscriptionId = program.addEventListener("ClaimEvent", (event) => {
     console.log("ClaimEvent", event);
   });
@@ -80,8 +59,7 @@ describe("play-halving", async () => {
     }
   );
 
-  const [programConfigPDA, _config_bump] = PublicKey.findProgramAddressSync(
-    [sToB(seeds.SEEDS_PREFIX), sToB(seeds.PROGRAM_CONFIG)],
+  const [programConfigPDA, _config_bump] = getProgramConfigPDADef(
     program.programId
   );
 
@@ -91,9 +69,10 @@ describe("play-halving", async () => {
     true
   );
 
-  //   this is how you get anchor workspace account types
-  type P = anchor.IdlAccounts<PlayHalving>["programConfig"]["settings"];
-  const c: P = {
+  // this is how you get anchor workspace account types
+  type ProgramSettings =
+    anchor.IdlAccounts<PlayHalving>["programConfig"]["settings"];
+  const programTestSettings: ProgramSettings = {
     betFee: new BN(5),
     grandRewardsPool: new BN(100000),
     maxWinnersPaid: 10,
@@ -101,12 +80,11 @@ describe("play-halving", async () => {
     minuteReturnPc: 50,
     betsFreeBundle: 2,
     paidBetsForFreeBundle: 5,
-    claimWindowHours: 48,
+    claimWindowHours: (1 / 60 / 60) * 30, //30 sec for testing
   };
-
   it("Is initialized!", async () => {
     const tx = await program.methods
-      .initialize(c)
+      .initialize(programTestSettings)
       .accounts({
         admin: adminWallet.publicKey,
         programConfig: programConfigPDA,
@@ -118,8 +96,10 @@ describe("play-halving", async () => {
       .signers([adminWallet])
       .rpc();
     console.log("init signature", tx);
-    console.log({
-      programConfigPDA: await program.account.programConfig.all(),
-    });
+
+    // const programConfigAcc = await program.account.programConfig.all();
+    // programConfigAcc.map(console.log);
+
+    expect(tx).to.not.be.null;
   });
 });
