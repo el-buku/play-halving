@@ -17,8 +17,11 @@ pub enum ContractError {
     #[msg("Betting is not done!")]
     NotDone,
     #[msg("User has already reclaimed!")]
-    AlreadyReclaimed,
-    // #[msg("Not enough tokens for sale")]
-    // NotEnoughTokensForSale,
-    // #[msg("Not enough tickets for sale")]
+    AlreadyClaimed,
+    #[msg("Claiming window has been closed!")]
+    ClaimingWindowClosed,
+    #[msg("Claiming is still open!")]
+    ClaimingWindowIsStillOpen,
+    #[msg("Illegal Program Status")]
+    IllegalProgramStatus,
 }

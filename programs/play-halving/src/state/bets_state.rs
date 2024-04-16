@@ -1,6 +1,7 @@
 use anchor_derive_space::InitSpace;
 use anchor_lang::prelude::*;
 
+use crate::constants::{HOUR_RETURN_FEE_PC, MINUTES_RETURN_FEE_PC};
 use crate::errors::ContractError;
 use crate::state::{ProgramSettings, ProgramStatus};
 
@@ -19,15 +20,30 @@ pub trait BetState<T: Default + Copy> {
 pub struct SecondsBetsState {
     pub initialized: bool,
     // 30k max bets per program address * 32 bytes = 96kb,
-    // #[max_len(1, 30_000)]
-    // pub users: Box<Vec<Pubkey>>,
-    pub users: [Pubkey; 30_000],
+    #[max_len(30_000)]
+    pub users: Vec<Pubkey>, // 30k max bets per program address * 32 bytes = 96kb
+}
+
+impl SecondsBetsState {
+    pub fn get_winners(&self) -> Option<Vec<Pubkey>> {
+        let winners: Vec<Pubkey> = self
+            .users
+            .iter()
+            .cloned()
+            .filter(|u| *u != Pubkey::default())
+            .collect();
+        if winners.len() > 0 {
+            Some(winners)
+        } else {
+            None
+        }
+    }
 }
 
 impl BetState<Pubkey> for SecondsBetsState {
     fn init_if_needed(&mut self) {
         if !self.initialized {
-            self.users = [Pubkey::default(); 30_000];
+            self.users = Vec::new();
             self.initialized = true;
         }
     }
@@ -43,7 +59,6 @@ impl BetState<Pubkey> for SecondsBetsState {
     }
 }
 
-// seconds bets placed for user
 #[account]
 #[derive(InitSpace)]
 pub struct UserBetsState {
@@ -54,9 +69,8 @@ pub struct UserBetsState {
     pub available_free_tickets: u64,
     pub total_placed_tickets: u64,
     #[max_len(30_000)]
-    pub placed_bet_seconds: Vec<i64>, // 30k max bets per program address * 32 bytes = 96kb
+    pub placed_bet_seconds: Vec<i64>,
 }
-
 
 impl UserBetsState {
     pub fn allocate_tickets_with_bonus(&mut self, num_tickets: u8, settings: ProgramSettings) {
@@ -71,19 +85,22 @@ impl UserBetsState {
 
         self.available_free_tickets += extra_free_tickets as u64;
     }
-    pub fn get_rebates_amount(&self, halving_timestamp: i64, ticket_price: u64) -> u64 {
+    pub fn get_rebates_amount(&self, settings: ProgramSettings, halving_timestamp: i64, ticket_price: u64) -> u64 {
+        let one_minute = 60;//sec
+        let one_hour = one_minute * 60;
+        let mut amount = 0;
         let bets = &self.placed_bet_seconds;
-        let one_second = 1_000;// seconds
-        let one_minute = one_second * 60;
-        for bet in bets.iter() {
+        let bets_paid = self.total_paid_tickets;
+        for (i, bet) in bets.iter().enumerate() {
+            if i as u64 >= bets_paid { break; }
             let diff = (halving_timestamp - bet).abs();
-            if diff < one_second {
-                // return 0;
-            } else if diff < one_minute {} else {}
+            if diff < one_minute {
+                amount += ticket_price * (MINUTES_RETURN_FEE_PC / 100) as u64
+            } else if diff < one_hour {
+                amount += ticket_price * (HOUR_RETURN_FEE_PC / 100) as u64
+            }
         }
-
-
-        0_u64
+        amount
     }
 }
 
@@ -105,7 +122,8 @@ impl BetState<i64> for UserBetsState {
             self.placed_bet_seconds.len() < 30_000,
             ContractError::UserOverPurchased
         );
-        let has_tickets_left: bool = self.available_paid_tickets > 0 || self.available_free_tickets > 0;
+        let has_tickets_left: bool =
+            self.available_paid_tickets > 0 || self.available_free_tickets > 0;
         require!(has_tickets_left, ContractError::NoTicketsLeft);
         if self.available_free_tickets > 0 {
             self.available_free_tickets -= 1;
@@ -119,4 +137,3 @@ impl BetState<i64> for UserBetsState {
         Ok(())
     }
 }
-

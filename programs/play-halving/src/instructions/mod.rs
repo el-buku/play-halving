@@ -9,4 +9,5 @@ pub mod init_program;
 pub mod buy_tickets;
 pub mod pause;
 pub mod mark_halving;
-mod reclaim;
+pub mod reclaim;
+pub mod close;

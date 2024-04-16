@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{Mint, Token, TokenAccount};
 
-use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX, TRANSFER_AUTHORITY};
+use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX};
 use crate::state::program_config::{ProgramSettings, ProgramStatus};
 use crate::state::ProgramConfig;
 

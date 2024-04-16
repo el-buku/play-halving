@@ -3,10 +3,10 @@ use anchor_lang::solana_program::vote::instruction;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{Mint, TokenAccount};
 
-use crate::constants::seeds::{PROGRAM_CONFIG, SECOND_STATE, SEEDS_PREFIX, TRANSFER_AUTHORITY, USER_STATE};
+use crate::constants::seeds::{PROGRAM_CONFIG, SECOND_STATE, SEEDS_PREFIX, USER_STATE};
 use crate::errors::ContractError;
-use crate::state::{BetState, ProgramConfig, SecondsBetsState, UserBetsState};
 use crate::state::program_config::{ProgramSettings, ProgramStatus};
+use crate::state::{BetState, ProgramConfig, SecondsBetsState, UserBetsState};
 
 #[derive(Accounts)]
 #[instruction(timestamp_to_bet: i64)]
@@ -45,7 +45,6 @@ pub struct PlaceBet<'info> {
     ],
     bump
     )]
-
     pub user_state_acc: Account<'info, UserBetsState>,
 
     pub system_program: Program<'info, System>,
@@ -56,12 +55,15 @@ impl<'info> PlaceBet<'info> {
     pub fn execute(ctx: Context<Self>, timestamp_to_bet: i64) -> Result<()> {
         let buyer = &ctx.accounts.buyer;
         let program_config = &mut ctx.accounts.program_config;
-        require!(program_config.status==ProgramStatus::Running,ContractError::BettingPaused);
+        require!(
+            program_config.status == ProgramStatus::Running,
+            ContractError::BettingPaused
+        );
         let user_state = &mut ctx.accounts.user_state_acc;
         let second_state = &mut ctx.accounts.second_state_acc;
         user_state.add_bet(timestamp_to_bet).unwrap();
         second_state.add_bet(buyer.key()).unwrap();
-        program_config.total_bets_sold += 1;
+        program_config.total_bets_placed += 1;
         Ok(())
     }
 }
