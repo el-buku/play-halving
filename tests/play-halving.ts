@@ -3,8 +3,14 @@ import { Program } from "@coral-xyz/anchor";
 import { PlayHalving } from "../target/types/play_halving";
 
 import { join } from "path";
-import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import {
+  Keypair,
+  PublicKey,
+  SystemProgram,
+  LAMPORTS_PER_SOL,
+} from "@solana/web3.js";
+import {
+  createMint,
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
@@ -14,16 +20,12 @@ const ANCHOR_TOML_PATH = join(__dirname, "../Anchor.toml");
 const seeds = {
   SEEDS_PREFIX: "PLAY_HALVING_____",
   PROGRAM_CONFIG: "PROGRAM_CONFIG",
-  TRANSFER_AUTHORITY: "TRANSFER_AUTHORITY",
   MILLISECOND_STATE: "MILLISECOND_STATE",
   USER_STATE: "USER_STATE",
 };
 const sToB = (seed) => Buffer.from(seed);
 const millisToB = (ts: number) =>
   new anchor.BN(ts).toArrayLike(Buffer, "be", 2);
-
-const mintAd = "dasmjksmdS";
-const bettingMint = new PublicKey(mintAd);
 
 type PDADef = [PublicKey, number];
 const getUserStateAcc = async (
@@ -49,19 +51,36 @@ const getMillisecondStateAcc = async (
   );
 };
 
-describe("play-halving", () => {
+const adminWallet = Keypair.generate();
+const buyer = Keypair.generate();
+
+describe("play-halving", async () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.AnchorProvider.env());
-
   const program = anchor.workspace.PlayHalving as Program<PlayHalving>;
+  const connection = program.provider.connection;
+  connection.requestAirdrop(adminWallet.publicKey, LAMPORTS_PER_SOL * 8);
+  const bettingMint = await createMint(
+    connection,
+    adminWallet,
+    adminWallet.publicKey,
+    adminWallet.publicKey,
+    2
+  );
   const subscriptionId = program.addEventListener("ClaimEvent", (event) => {
-    console.log("reclaimEvt", event);
+    console.log("ClaimEvent", event);
   });
+  const subscriptionId2 = program.addEventListener("PlaceBetEvent", (event) => {
+    console.log("PlaceBetEvent", event);
+  });
+  const subscriptionId3 = program.addEventListener(
+    "BuyTicketsEvent",
+    (event) => {
+      console.log("reclaimEvt", event);
+    }
+  );
 
-  const adminWallet = Keypair.generate();
-  const buyer = Keypair.generate();
-
-  const [programConfigPDA, _config_bumper] = PublicKey.findProgramAddressSync(
+  const [programConfigPDA, _config_bump] = PublicKey.findProgramAddressSync(
     [sToB(seeds.SEEDS_PREFIX), sToB(seeds.PROGRAM_CONFIG)],
     program.programId
   );
@@ -79,10 +98,11 @@ describe("play-halving", () => {
         admin: adminWallet.publicKey,
         programConfig: programConfigPDA,
         programVault: programVault,
-        bettingMing: bettingMint,
+        bettingMint,
         systemProgram: SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
+      .signers([adminWallet])
       .rpc();
     console.log("Your transaction signature", tx);
   });

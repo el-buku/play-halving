@@ -8,6 +8,7 @@ use crate::errors::ContractError;
 use crate::state::program_config::{ProgramSettings, ProgramStatus};
 use crate::state::{BetState, ProgramConfig, SecondsBetsState, UserBetsState};
 
+#[event_cpi]
 #[derive(Accounts)]
 #[instruction(timestamp_to_bet: i64)]
 pub struct PlaceBet<'info> {
@@ -51,6 +52,15 @@ pub struct PlaceBet<'info> {
     // pub clock: Sysvar<'info, Clock>, // For accessing the current blockchain timestamp
 }
 
+#[event]
+pub struct PlaceBetEvent {
+    timestamp_to_bet: i64,
+    buyer: Pubkey,
+    total_paid_tickets: u64,
+    available_paid_tickets: u64,
+    available_free_tickets: u64,
+    total_placed_tickets: u64,
+}
 impl<'info> PlaceBet<'info> {
     pub fn execute(ctx: Context<Self>, timestamp_to_bet: i64) -> Result<()> {
         let buyer = &ctx.accounts.buyer;
@@ -64,6 +74,14 @@ impl<'info> PlaceBet<'info> {
         user_state.add_bet(timestamp_to_bet).unwrap();
         second_state.add_bet(buyer.key()).unwrap();
         program_config.total_bets_placed += 1;
+        emit_cpi!(PlaceBetEvent {
+            timestamp_to_bet,
+            buyer: buyer.key(),
+            total_placed_tickets: user_state.total_placed_tickets,
+            total_paid_tickets: user_state.total_paid_tickets,
+            available_paid_tickets: user_state.available_paid_tickets,
+            available_free_tickets: user_state.available_free_tickets,
+        });
         Ok(())
     }
 }

@@ -29,6 +29,14 @@ pub mod play_halving {
         PauseBetting::execute(ctx)
     }
 
+    pub fn claim(ctx: Context<ClaimRewards>) -> Result<()> {
+        ClaimRewards::execute(ctx)
+    }
+
+    pub fn close(ctx: Context<CloseProgram>) -> Result<()> {
+        CloseProgram::execute(ctx)
+    }
+
     pub fn mark_halving(ctx: Context<MarkHalvingTimestamp>, halving_timestamp: i64) -> Result<()> {
         MarkHalvingTimestamp::execute(ctx, halving_timestamp)
     }

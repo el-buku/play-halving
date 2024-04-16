@@ -9,6 +9,7 @@ use crate::state::{
 };
 use anchor_spl::token::Transfer;
 
+#[event_cpi]
 #[derive(Accounts)]
 #[instruction(num_tickets: u8)]
 pub struct BuyTickets<'info> {
@@ -60,6 +61,16 @@ pub struct BuyTickets<'info> {
     pub associated_token_program: Program<'info, AssociatedToken>,
 }
 
+#[event]
+pub struct BuyTicketsEvent {
+    num_tickets: u8,
+    num_free_tickets: u8,
+    total_paid_tickets: u64,
+    available_paid_tickets: u64,
+    available_free_tickets: u64,
+    total_placed_tickets: u64,
+}
+
 impl<'info> BuyTickets<'info> {
     pub fn execute(ctx: Context<Self>, num_tickets: u8) -> Result<()> {
         let program_config = &ctx.accounts.program_config;
@@ -89,13 +100,22 @@ impl<'info> BuyTickets<'info> {
             authority: buyer.to_account_info(),
         };
         let context = CpiContext::new(ctx.accounts.token_program.to_account_info(), accounts);
-        anchor_spl::token::transfer(context, tickets_price);
+        anchor_spl::token::transfer(context, tickets_price).unwrap();
         user_state.init_if_needed();
-        user_state.allocate_tickets_with_bonus(num_tickets, program_settings);
+        let num_free_tickets =
+            user_state.allocate_tickets_with_bonus(num_tickets, program_settings);
         msg!("user:total_paid:{}", user_state.total_paid_tickets);
         msg!("user:available_paid:{}", user_state.available_paid_tickets);
         msg!("user:available_free:{}", user_state.available_free_tickets);
         msg!("Transfer complete");
+        emit_cpi!(BuyTicketsEvent {
+            num_tickets,
+            num_free_tickets,
+            total_placed_tickets: user_state.total_placed_tickets,
+            total_paid_tickets: user_state.total_paid_tickets,
+            available_paid_tickets: user_state.available_paid_tickets,
+            available_free_tickets: user_state.available_free_tickets,
+        });
         Ok(())
     }
 }

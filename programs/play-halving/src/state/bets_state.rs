@@ -73,7 +73,11 @@ pub struct UserBetsState {
 }
 
 impl UserBetsState {
-    pub fn allocate_tickets_with_bonus(&mut self, num_tickets: u8, settings: ProgramSettings) {
+    pub fn allocate_tickets_with_bonus(
+        &mut self,
+        num_tickets: u8,
+        settings: ProgramSettings,
+    ) -> u8 {
         let mut extra_free_tickets = 0;
         for _ in 0..num_tickets {
             self.total_paid_tickets += 1;
@@ -84,15 +88,18 @@ impl UserBetsState {
         }
 
         self.available_free_tickets += extra_free_tickets as u64;
+        extra_free_tickets
     }
-    pub fn get_rebates_amount(&self,  halving_timestamp: i64, ticket_price: u64) -> u64 {
-        let one_minute = 60;//sec
+    pub fn get_rebates_amount(&self, halving_timestamp: i64, ticket_price: u64) -> u64 {
+        let one_minute = 60; //sec
         let one_hour = one_minute * 60;
         let mut amount = 0;
         let bets = &self.placed_bet_seconds;
         let bets_paid = self.total_paid_tickets;
         for (i, bet) in bets.iter().enumerate() {
-            if i as u64 >= bets_paid { break; }
+            if i as u64 >= bets_paid {
+                break;
+            }
             let diff = (halving_timestamp - bet).abs();
             if diff < one_minute {
                 amount += ticket_price * (MINUTES_RETURN_FEE_PC / 100) as u64

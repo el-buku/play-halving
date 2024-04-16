@@ -1,20 +1,19 @@
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::vote::instruction;
 use anchor_spl::associated_token::AssociatedToken;
-use anchor_spl::token::{Mint, Token, TokenAccount};
 use anchor_spl::token::Transfer;
+use anchor_spl::token::{Mint, Token, TokenAccount};
 
 use program_config::MarkedHalving;
 
+use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX, USER_STATE};
 use crate::constants::{GRAND_REWARDS_POOL, MAX_WINNERS_PAID};
-use crate::constants::seeds::{PROGRAM_CONFIG, SECOND_STATE, SEEDS_PREFIX, USER_STATE};
 use crate::errors::ContractError;
-use crate::instruction::MarkHalving;
-use crate::state::{BetState, program_config, ProgramConfig, SecondsBetsState, UserBetsState};
-use crate::state::program_config::{ProgramSettings, ProgramStatus};
+use crate::state::program_config::ProgramStatus;
+use crate::state::{program_config, ProgramConfig, UserBetsState};
 
+#[event_cpi]
 #[derive(Accounts)]
-pub struct Claim<'info> {
+pub struct ClaimRewards<'info> {
     #[account(mut)]
     pub buyer: Signer<'info>,
     #[account(
@@ -85,7 +84,7 @@ pub struct ClaimEvent {
     user: Pubkey,
 }
 
-impl<'info> Claim<'info> {
+impl<'info> ClaimRewards<'info> {
     pub fn execute(ctx: Context<Self>) -> Result<()> {
         let clock = Clock::get().unwrap();
         let program_config = &mut ctx.accounts.program_config;
@@ -115,9 +114,9 @@ impl<'info> Claim<'info> {
         };
         match program_config.status {
             ProgramStatus::ClaimsOpen(MarkedHalving {
-                                          halving_timestamp,
-                                          marked_at: _,
-                                      }) => {
+                halving_timestamp,
+                marked_at: _,
+            }) => {
                 require!(
                     program_config.is_claiming_window_open(clock.unix_timestamp),
                     ContractError::ClaimingWindowClosed
@@ -131,7 +130,7 @@ impl<'info> Claim<'info> {
                     let paid_tickets = user_state.total_paid_tickets;
                     let amount = paid_tickets * ticket_price;
                     perform_transfer(amount);
-                    emit!(ClaimEvent {
+                    emit_cpi!(ClaimEvent {
                         amount,
                         reclaim_result: ClaimResult::Return,
                         user: buyer.key(),
@@ -141,7 +140,7 @@ impl<'info> Claim<'info> {
                     let amount = per_winner;
                     perform_transfer(amount);
                     program_config.winners_paid += 1;
-                    emit!(ClaimEvent {
+                    emit_cpi!(ClaimEvent {
                         amount,
                         reclaim_result: ClaimResult::Winner,
                         user: buyer.key(),
@@ -159,7 +158,7 @@ impl<'info> Claim<'info> {
                         program_vault.amount - min_amount
                     };
                     perform_transfer(amount);
-                    emit!(ClaimEvent {
+                    emit_cpi!(ClaimEvent {
                         amount: 0_u64,
                         reclaim_result: ClaimResult::Rebate,
                         user: buyer.key(),
