@@ -1389,6 +1389,7 @@ dependencies = [
  "anchor-derive-space",
  "anchor-lang",
  "anchor-spl",
+ "bytemuck",
 ]
 
 [[package]]
