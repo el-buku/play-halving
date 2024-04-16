@@ -1,11 +1,8 @@
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::vote::instruction;
-use anchor_spl::associated_token::AssociatedToken;
-use anchor_spl::token::{Mint, TokenAccount};
 
 use crate::constants::seeds::{PROGRAM_CONFIG, SECOND_STATE, SEEDS_PREFIX, USER_STATE};
 use crate::errors::ContractError;
-use crate::state::program_config::{ProgramSettings, ProgramStatus};
+use crate::state::program_config::ProgramStatus;
 use crate::state::{BetState, ProgramConfig, SecondsBetsState, UserBetsState};
 
 #[event_cpi]

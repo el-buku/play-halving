@@ -3,7 +3,7 @@ use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{Mint, Token, TokenAccount};
 
 use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX};
-use crate::state::program_config::{ProgramSettings, ProgramStatus};
+use crate::state::program_config::ProgramSettings;
 use crate::state::ProgramConfig;
 
 #[derive(Accounts)]

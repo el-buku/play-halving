@@ -1,10 +1,9 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token, TokenAccount, Transfer};
 
-use crate::constants::{GRAND_REWARDS_POOL, MAX_WINNERS_PAID};
 use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX};
 use crate::errors::ContractError;
-use crate::state::{BetState, ProgramConfig, ProgramStatus};
+use crate::state::{ProgramConfig, ProgramStatus};
 
 #[derive(Accounts)]
 pub struct CloseProgram<'info> {
@@ -37,7 +36,6 @@ pub struct CloseProgram<'info> {
     pub clock: Sysvar<'info, Clock>,
     pub system_program: Program<'info, System>,
     pub token_program: Program<'info, Token>,
-
 }
 
 impl<'info> CloseProgram<'info> {
@@ -49,7 +47,7 @@ impl<'info> CloseProgram<'info> {
         let admin_ata = &ctx.accounts.admin_ata;
         let mint = &ctx.accounts.betting_mint;
         let e_decimals = 10_u64.pow(mint.decimals as u32);
-      let transfer_acc_infos = Transfer {
+        let transfer_acc_infos = Transfer {
             from: program_vault.to_account_info(),
             to: admin_ata.to_account_info(),
             authority: program_config.to_account_info(),
@@ -68,7 +66,10 @@ impl<'info> CloseProgram<'info> {
         };
         match program_config.status {
             ProgramStatus::ClaimsOpen(marked_halving) => {
-                require!(program_config.is_claiming_window_open(clock.unix_timestamp),ContractError::ClaimingWindowIsStillOpen);
+                require!(
+                    program_config.is_claiming_window_open(clock.unix_timestamp),
+                    ContractError::ClaimingWindowIsStillOpen
+                );
 
                 perform_transfer(program_vault.amount);
                 program_config.status = ProgramStatus::Closed(marked_halving);

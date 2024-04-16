@@ -1,4 +1,3 @@
-use anchor_lang::accounts::program;
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::TokenAccount;

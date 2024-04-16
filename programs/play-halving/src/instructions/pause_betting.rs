@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 
 use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX};
 use crate::errors::ContractError;
-use crate::state::{BetState, ProgramConfig, ProgramStatus};
+use crate::state::{ProgramConfig, ProgramStatus};
 
 #[derive(Accounts)]
 pub struct PauseBetting<'info> {
