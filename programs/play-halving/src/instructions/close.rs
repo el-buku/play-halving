@@ -49,9 +49,7 @@ impl<'info> CloseProgram<'info> {
         let admin_ata = &ctx.accounts.admin_ata;
         let mint = &ctx.accounts.betting_mint;
         let e_decimals = 10_u64.pow(mint.decimals as u32);
-        let ticket_price = program_config.settings.bet_fee * e_decimals;
-        let per_winner = GRAND_REWARDS_POOL / MAX_WINNERS_PAID as u64 * e_decimals;
-        let transfer_acc_infos = Transfer {
+      let transfer_acc_infos = Transfer {
             from: program_vault.to_account_info(),
             to: admin_ata.to_account_info(),
             authority: program_config.to_account_info(),
@@ -72,7 +70,7 @@ impl<'info> CloseProgram<'info> {
             ProgramStatus::ClaimsOpen(marked_halving) => {
                 require!(program_config.is_claiming_window_open(clock.unix_timestamp),ContractError::ClaimingWindowIsStillOpen);
 
-
+                perform_transfer(program_vault.amount);
                 program_config.status = ProgramStatus::Closed(marked_halving);
                 // program_config.save(ctx.accounts.program_config)?;
             }

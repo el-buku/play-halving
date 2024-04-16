@@ -2,11 +2,11 @@ use anchor_derive_space::InitSpace;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Transfer;
 
+use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX};
 use crate::constants::{
-    BET_FEE, BETS_FREE_BUNDLE, CLAIM_WINDOW_HOURS, GRAND_REWARDS_POOL, HOUR_RETURN_FEE_PC,
+    BETS_FREE_BUNDLE, BET_FEE, CLAIM_WINDOW_HOURS, GRAND_REWARDS_POOL, HOUR_RETURN_FEE_PC,
     MAX_WINNERS_PAID, MINUTES_RETURN_FEE_PC, PAID_BETS_FOR_FREE_BUNDLE,
 };
-use crate::constants::seeds::{PROGRAM_CONFIG, SEEDS_PREFIX};
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq, InitSpace)]
 pub struct MarkedHalving {

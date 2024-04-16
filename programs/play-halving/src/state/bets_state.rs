@@ -85,7 +85,7 @@ impl UserBetsState {
 
         self.available_free_tickets += extra_free_tickets as u64;
     }
-    pub fn get_rebates_amount(&self, settings: ProgramSettings, halving_timestamp: i64, ticket_price: u64) -> u64 {
+    pub fn get_rebates_amount(&self,  halving_timestamp: i64, ticket_price: u64) -> u64 {
         let one_minute = 60;//sec
         let one_hour = one_minute * 60;
         let mut amount = 0;
