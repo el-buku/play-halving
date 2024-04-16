@@ -9,7 +9,7 @@ import {
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-import { getProgramConfigPDADef } from "../client/utils";
+import { getProgramConfigPDADef } from "../client/PDAs";
 import { assert, expect } from "chai";
 
 const ANCHOR_TOML_PATH = join(__dirname, "../Anchor.toml");

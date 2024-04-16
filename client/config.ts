@@ -1,7 +1,11 @@
 import { BN, IdlAccounts } from "@coral-xyz/anchor";
 import { PlayHalving } from "../target/types/play_halving";
+import { PublicKey } from "@solana/web3.js";
+import { loadWalletKey } from "./utils";
 
-//   this is how you get anchor workspace account types
+export const adminWallet = loadWalletKey(__dirname + "/../deployment.json");
+
+// this is how you get anchor workspace account types
 export type ProgramSettings =
   IdlAccounts<PlayHalving>["programConfig"]["settings"];
 export const programSettings: ProgramSettings = {
@@ -13,4 +17,15 @@ export const programSettings: ProgramSettings = {
   betsFreeBundle: 2,
   paidBetsForFreeBundle: 5,
   claimWindowHours: 48,
+};
+
+//USDC
+export const bettingMintAddy = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+export const bettingMint = new PublicKey(bettingMintAddy);
+
+export const seeds = {
+  SEEDS_PREFIX: "PLAY_HALVING_____",
+  PROGRAM_CONFIG: "PROGRAM_CONFIG",
+  MILLISECOND_STATE: "MILLISECOND_STATE",
+  USER_STATE: "USER_STATE",
 };
