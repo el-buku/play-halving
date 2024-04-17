@@ -31,7 +31,6 @@ import {
 } from "react";
 // import { ProgramContextProvider } from "./ProgramContext";
 import { endpoint, network, wallets } from "../constants";
-import { WalletButton } from "../components/WalletConnectButton";
 import { createPortal } from "react-dom";
 import { WalletReadyState, type WalletName } from "@solana/wallet-adapter-base";
 function truncateMiddle(str: string, maxLength: number = 12) {
@@ -109,7 +108,7 @@ export const WalletButtonEntry: FC<WalletModalProps> = ({
   );
 
   const handleWalletClick = useCallback(
-    (event, walletName: WalletName) => {
+    (event: any, walletName: WalletName) => {
       console.log({ walletName, event });
       select(walletName);
       handleClose(event);
