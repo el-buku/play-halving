@@ -160,19 +160,20 @@ export const WalletButtonEntry: FC<WalletModalProps> = ({
     };
 
     // Get original overflow
-    const { overflow } = window.getComputedStyle(document.body);
-    // Hack to enable fade in animation after mount
-    setTimeout(() => setFadeIn(true), 0);
-    // Prevent scrolling on mount
-    document.body.style.overflow = "hidden";
-    // Listen for keydown events
-    window.addEventListener("keydown", handleKeyDown, false);
-
-    return () => {
-      // Re-enable scrolling when component unmounts
-      document.body.style.overflow = overflow;
-      window.removeEventListener("keydown", handleKeyDown, false);
-    };
+    if (visible) {
+      const { overflow } = window.getComputedStyle(document.body);
+      // Hack to enable fade in animation after mount
+      setTimeout(() => setFadeIn(true), 0);
+      // Prevent scrolling on mount
+      document.body.style.overflow = "hidden";
+      // Listen for keydown events
+      window.addEventListener("keydown", handleKeyDown, false);
+      return () => {
+        // Re-enable scrolling when component unmounts
+        document.body.style.overflow = overflow;
+        window.removeEventListener("keydown", handleKeyDown, false);
+      };
+    }
   }, [hideModal, handleTabKey]);
 
   useLayoutEffect(
