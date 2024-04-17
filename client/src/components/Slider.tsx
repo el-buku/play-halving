@@ -26,7 +26,6 @@ export const Slider: FC<PortalProps> = ({ container }) => {
     setSliderValue(90);
   }, []);
   useLayoutEffect(() => {
-    console.log("aici");
     if (sliderRef.current) {
       sliderRef.current.style.background = `linear-gradient(to right, #7b3dff ${sliderValuePercent}%, #ccc 0%)`;
     }

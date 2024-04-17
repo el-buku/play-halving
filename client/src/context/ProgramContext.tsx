@@ -11,6 +11,7 @@ import {
   useAnchorWallet,
   useConnection,
   useWallet,
+  type AnchorWallet,
 } from "@solana/wallet-adapter-react";
 import * as anchor from "@coral-xyz/anchor";
 import { IDL, type PlayHalving } from "../../../target/types/play_halving";
@@ -42,13 +43,13 @@ const BN = pk.BN;
 // import { SUB_ID } from "@/constants";
 
 type ProgramData = {
-  buyTicketsIxn: (
-    numTickets: number
-  ) => Promise<anchor.web3.TransactionInstruction>;
-  placeBetIxn: (
-    timestamp: number
-  ) => Promise<anchor.web3.TransactionInstruction>;
-  claimIxn: () => Promise<anchor.web3.TransactionInstruction>;
+  buyTicketsTxn: (
+    wallet: AnchorWallet
+  ) => (numTickets: number) => Promise<anchor.web3.Transaction>;
+  placeBetTxn: (
+    wallet: AnchorWallet
+  ) => (timestamp: number) => Promise<anchor.web3.Transaction>;
+  claimTxn: (wallet: AnchorWallet) => () => Promise<anchor.web3.Transaction>;
 };
 const ProgramContext = createContext<ProgramData | undefined>(undefined);
 
@@ -63,7 +64,11 @@ export type TxnSummary = {
   totalAmountTickets: number;
 };
 export const useProgram = () => useContext(ProgramContext);
-const useProgramListeners = () =>
+type ProgramEvtName = PlayHalving["events"][number]["name"];
+const useProgramListener = (
+  evt: ProgramEvtName,
+  callback: (data: any) => void
+): number =>
   // : TxnSummary[]
   {
     //@ts-ignore
@@ -72,21 +77,22 @@ const useProgramListeners = () =>
       programId
       // anchorProvider
     );
-    const subscriptionId = program.addEventListener("ClaimEvent", (event) => {
-      console.log("ClaimEvent", event);
-    });
-    const subscriptionId2 = program.addEventListener(
-      "PlaceBetEvent",
-      (event) => {
-        console.log("PlaceBetEvent", event);
-      }
-    );
-    const subscriptionId3 = program.addEventListener(
-      "BuyTicketsEvent",
-      (event) => {
-        console.log("BuyTicketsEvent", event);
-      }
-    );
+    return program.addEventListener(evt, callback);
+    // const subscriptionId = program.addEventListener("ClaimEvent", (event) => {
+    //   console.log("ClaimEvent", event);
+    // });
+    // const subscriptionId2 = program.addEventListener(
+    //   "PlaceBetEvent",
+    //   (event) => {
+    //     console.log("PlaceBetEvent", event);
+    //   }
+    // );
+    // const subscriptionId3 = program.addEventListener(
+    //   "BuyTicketsEvent",
+    //   (event) => {
+    //     console.log("BuyTicketsEvent", event);
+    //   }
+    // );
     // const programConfigPDA = getProgramConfigPDADef(programId)[0];
     // const [txnList, setTxnList] = useState<TxnSummary[]>([]);
     // const { connection } = useConnection();
@@ -160,111 +166,120 @@ const useProgramListeners = () =>
 export const ProgramContextProvider = ({ children }: PropsWithChildren<{}>) => {
   const { connection } = useConnection();
 
-  const wallet = useAnchorWallet();
-  const [userBetStateInfo, setUserBetStateInfo] = useState();
-  const programData = useProgramListeners();
-  if (!wallet) {
-    return (
-      <ProgramContext.Provider value={undefined}>
-        {children}
-      </ProgramContext.Provider>
-    );
-  } else {
-    const anchorProvider = new anchor.AnchorProvider(
-      connection,
-      wallet,
-      anchor.AnchorProvider.defaultOptions()
-    );
+  // const wallet = useAnchorWallet();
+  // const [userBetStateInfo, setUserBetStateInfo] = useState();
+  // if (!wallet) {
+  //   return (
+  //     <ProgramContext.Provider value={undefined}>
+  //       {children}
+  //     </ProgramContext.Provider>
+  //   );
+  // } else {
+  const anchorProvider = new anchor.AnchorProvider(
+    connection,
     //@ts-ignore
-    const program = new anchor.Program<PlayHalving>(
-      IDL,
-      programId,
-      anchorProvider
-    );
+    null,
+    anchor.AnchorProvider.defaultOptions()
+  );
+  //@ts-ignore
+  IDL.address = programId;
+  console.log({ IDL });
 
-    const programConfigPDA = getProgramConfigPDADef(programId)[0];
-    const programVault = getAssociatedTokenAddressSync(
-      bettingMint,
-      programConfigPDA,
-      true
-    );
+  //@ts-ignore
+  const program = new anchor.Program<PlayHalving>(
+    IDL,
+    programId,
+    anchorProvider
+  );
+  console.log("erer232");
+
+  const programConfigPDA = getProgramConfigPDADef(programId)[0];
+  const programVault = getAssociatedTokenAddressSync(
+    bettingMint,
+    programConfigPDA,
+    true
+  );
+  const buyTicketsTxn = (wallet: AnchorWallet) => (numTickets: number) => {
     const userStateAcc = getUserStateAcc(wallet.publicKey, TOKEN_PROGRAM_ID)[0];
-    const buyTicketsIxn = (numTickets: number) => {
-      const buyerAta = getAssociatedTokenAddressSync(
-        bettingMint,
-        wallet.publicKey,
-        false,
-        TOKEN_PROGRAM_ID
-      );
-      return program.methods
-        .buyTickets(numTickets)
-        .accountsPartial({
-          buyer: wallet.publicKey,
-          buyerAta,
-          programVault,
-          programConfig: programConfigPDA,
-          bettingMint,
-          userStateAcc,
-          systemProgram: SystemProgram.programId,
-          associatedTokenProgram: TOKEN_PROGRAM_ID,
-        })
-        .instruction();
-    };
-    const placeBetIxn = (timestamp: number) => {
-      const secondStateAcc = getSecondStateAcc(timestamp, program.programId)[0];
 
-      return program.methods
-        .placeBet(new BN(timestamp))
-        .accountsPartial({
-          buyer: wallet.publicKey,
-          programConfig: programConfigPDA,
-          userStateAcc,
-          secondStateAcc,
-          systemProgram: SystemProgram.programId,
-        })
-        .instruction();
-    };
-    const claimIxn = async () => {
-      const ata = await getAssociatedTokenAddress(
-        bettingMint,
-        wallet.publicKey,
-        false
-      );
-      // Claim rewards
-      return await program.methods
-        .claim()
-        .accountsPartial({
-          buyer: wallet.publicKey,
-          buyerAta: ata,
-          programConfig: programConfigPDA,
-          programVault: programVault,
-          bettingMint: bettingMint,
-          userStateAcc: getUserStateAcc(wallet.publicKey, program.programId)[0],
-          tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-        })
-        .instruction();
-    };
-    // const ads = program.account.userBetsState.subscribe(userStateAcc);
-    // ads.on("change", (info) => {
-    //   console.log({ userStateAccInfo: info });
-    // });
-
-    // const userBetStateInfo = await program.account.userBetsState.fetch(
-    //   userStateAcc
-    // );
-    // console.log("sssttt", { userBetStateInfo });
-    return (
-      <ProgramContext.Provider
-        value={{
-          buyTicketsIxn,
-          placeBetIxn,
-          claimIxn,
-        }}
-      >
-        {children}
-      </ProgramContext.Provider>
+    const buyerAta = getAssociatedTokenAddressSync(
+      bettingMint,
+      wallet.publicKey,
+      false,
+      TOKEN_PROGRAM_ID
     );
-  }
+    return program.methods
+      .buyTickets(numTickets)
+      .accounts({
+        buyer: wallet.publicKey,
+        buyerAta,
+        programVault,
+        programConfig: programConfigPDA,
+        bettingMint,
+        userStateAcc,
+        systemProgram: SystemProgram.programId,
+        associatedTokenProgram: TOKEN_PROGRAM_ID,
+      })
+      .transaction();
+  };
+  const placeBetTxn = (wallet: AnchorWallet) => (timestamp: number) => {
+    const secondStateAcc = getSecondStateAcc(timestamp, program.programId)[0];
+    const userStateAcc = getUserStateAcc(wallet.publicKey, TOKEN_PROGRAM_ID)[0];
+
+    return program.methods
+      .placeBet(new BN(timestamp))
+      .accounts({
+        buyer: wallet.publicKey,
+        programConfig: programConfigPDA,
+        userStateAcc,
+        secondStateAcc,
+        systemProgram: SystemProgram.programId,
+      })
+      .transaction();
+  };
+  const claimTxn = (wallet: AnchorWallet) => async () => {
+    const ata = await getAssociatedTokenAddress(
+      bettingMint,
+      wallet.publicKey,
+      false
+    );
+    // Claim rewards
+    return await program.methods
+      .claim()
+      .accounts({
+        buyer: wallet.publicKey,
+        buyerAta: ata,
+        programConfig: programConfigPDA,
+        programVault: programVault,
+        bettingMint: bettingMint,
+        userStateAcc: getUserStateAcc(wallet.publicKey, program.programId)[0],
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+      })
+      .transaction();
+  };
+
+  const programState = program.account;
+  console.log({ programState });
+  // const ads = program.account.userBetsState.subscribe(userStateAcc);
+  // ads.on("change", (info) => {
+  //   console.log({ userStateAccInfo: info });
+  // });
+
+  // const userBetStateInfo = await program.account.userBetsState.fetch(
+  //   userStateAcc
+  // );
+  // console.log("sssttt", { userBetStateInfo });
+  return (
+    <ProgramContext.Provider
+      value={{
+        buyTicketsTxn,
+        placeBetTxn,
+        claimTxn,
+      }}
+    >
+      {children}
+    </ProgramContext.Provider>
+  );
 };

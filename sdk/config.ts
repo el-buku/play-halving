@@ -1,5 +1,5 @@
 import { BN, IdlAccounts } from "@coral-xyz/anchor";
-import { PlayHalving } from "../target/types/play_halving";
+import { type PlayHalving } from "../target/types/play_halving";
 import { PublicKey, Keypair } from "@solana/web3.js";
 
 export const adminWallet = Keypair.generate();

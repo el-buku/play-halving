@@ -16,13 +16,14 @@ import {
 
 // import { ProgramContextProvider } from "./ProgramContext";
 import { endpoint, network, wallets } from "../constants";
+import { ProgramContextProvider } from "./ProgramContext";
 export function AppContext({ children }: { children: React.ReactNode }) {
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          {children}
-          {/* <ProgramContextProvider>{children}</ProgramContextProvider> */}
+          {/* {children} */}
+          <ProgramContextProvider>{children}</ProgramContextProvider>
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
