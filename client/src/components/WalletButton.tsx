@@ -155,23 +155,62 @@ export const WalletButtonEntry: FC<PortalProps> = ({
   };
   const WalletModal = () => (
     <div
-      // className="fade show"
-      style={{
-        position: "fixed",
-        top: "50%",
-        left: "50%",
-        zIndex: 10,
-        transition: visible ? "opacity 1s" : "opacity 0.3s",
-        opacity: visible ? 1 : 0, // triggers transition
-        /* bring your own prefixes */
-        transform: "translate(-50%, -50%)",
-      }}
+      className={visible ? "fade modal-dialog" : "fade modal-dialog show"}
       tabIndex={-1}
       role="dialog"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div className="modal-dialog" role="document">
+      <style>{`
+  .modal-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 10;
+    transform: translate(-50%, -50%);
+  }
+
+  .modal-dialog.fade {
+      opacity: 0;
+    }
+   .show{
+    transition: opacity 1.3s;
+    opacity:1!important
+  }
+
+  .modal-dialog.show {
+    transition: opacity 1s;
+    opacity: 1;
+  }
+
+  .close {
+    margin-bottom: 0;
+  }
+
+  .wallet-img {
+    max-width: 327px;
+  }
+
+  .wallet-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .crypto {
+    padding-bottom: 10px;
+    cursor: pointer;
+    height: auto;
+    justify-content: center;
+  }
+
+  .crypto-icon {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+  }
+`}</style>
+      <div className="modal-document">
         <div className="modal-content">
           <div className="modal-header">
             <button
@@ -182,7 +221,6 @@ export const WalletButtonEntry: FC<PortalProps> = ({
               onClick={() => {
                 setVisible(false);
               }}
-              style={{ marginBottom: 0 }}
             >
               <span aria-hidden="true">
                 <img src="img/cross%201.svg" alt="" />
@@ -191,11 +229,7 @@ export const WalletButtonEntry: FC<PortalProps> = ({
           </div>
           <div className="modal-body">
             <div className="flex-wallet">
-              <img
-                style={{ maxWidth: "327px" }}
-                src="img/left-wallet.png"
-                alt=""
-              />
+              <img className="wallet-img" src="img/left-wallet.png" alt="" />
               <div className="modal-cnt-wallets">
                 <div className="connect-wallet-modal">
                   <div className="connect">Connect Wallet</div>
@@ -205,23 +239,11 @@ export const WalletButtonEntry: FC<PortalProps> = ({
                       : "You'll need a Solana wallet to continue"}
                   </div>
                 </div>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(3, 1fr)",
-                    gap: "20px",
-                  }}
-                >
+                <div className="wallet-grid">
                   {listedWallets.concat(collapsedWallets).map((w, i) => {
                     return (
                       <div
                         className="crypto"
-                        style={{
-                          paddingBottom: 10,
-                          cursor: "pointer",
-                          height: "auto",
-                          justifyContent: "center",
-                        }}
                         onClick={(event) =>
                           handleWalletClick(event, w.adapter.name)
                         }
@@ -230,11 +252,7 @@ export const WalletButtonEntry: FC<PortalProps> = ({
                           <img
                             src={w.adapter.icon}
                             alt={`${w.adapter.name} icon`}
-                            style={{
-                              width: "100%",
-                              aspectRatio: "1/1",
-                              objectFit: "cover",
-                            }}
+                            className="crypto-icon"
                           />
                           <span>{w.adapter.name}</span>
                         </div>

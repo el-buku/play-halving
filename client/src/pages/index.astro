@@ -87,21 +87,7 @@ import {AppEntry} from "../AppEntry.tsx"
         <div class="container">
           <div class="flex-navbar">
             <img class="logo" src="img/logo.png" alt="" />
-            <div class="slidecontainer">
-              <input
-                type="range"
-                min="1"
-                max="100"
-                value="50"
-                style="position: relative"
-                class="slider"
-                id="myRange"
-              />
-              <div class="tool" id="tooltip">
-                <span id="demo">50</span>Minimum tickets Left To Execute The
-                Draw
-              </div>
-            </div>
+            <div id="sliderContainer">
             <!-- <AppContext client:load> -->
               <div id="walletButton"/>
             <!-- </AppContext> -->
