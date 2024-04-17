@@ -131,8 +131,8 @@ export const WalletButtonEntry: FC<PortalProps> = ({
   }, [hideModal, handleTabKey]);
 
   console.log({ visible });
-  const addr = connectedWallet?.adapter.publicKey?.toString() || "";
-  const [displayText, setDisplayText] = useState(truncateMiddle(addr));
+  const addr = connectedWallet?.adapter.publicKey?.toString();
+  const [displayText, setDisplayText] = useState("Connecting...");
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
   const handleMouseOver = () => {
@@ -140,22 +140,26 @@ export const WalletButtonEntry: FC<PortalProps> = ({
       clearTimeout(timeoutId);
       setTimeoutId(null);
     }
+
     connected && setDisplayText("Disconnect Wallet");
   };
-
-  const handleMouseOut = () => {
+  useLayoutEffect(() => {
+    addr && setDisplayText(truncateMiddle(addr));
+  }, [addr]);
+  const handleMouseOut = useCallback(() => {
     if (timeoutId) {
       clearTimeout(timeoutId);
       setTimeoutId(null);
     }
-    if (connected) {
+    if (connected && addr) {
       const id = setTimeout(() => setDisplayText(truncateMiddle(addr)), 1000);
       setTimeoutId(id);
     }
-  };
+  }, [addr, connected]);
+  console.log({ visible });
   const WalletModal = () => (
     <div
-      className={visible ? "fade modal-dialog" : "fade modal-dialog show"}
+      className={visible ? "fade modal-dialog show" : "fade modal-dialog "}
       tabIndex={-1}
       role="dialog"
       aria-labelledby="exampleModalLabel"
@@ -290,7 +294,7 @@ export const WalletButtonEntry: FC<PortalProps> = ({
                 ? displayText
                 : connecting
                 ? "Connecting..."
-                : "Connected"}
+                : "Connected" || "Connecting..."}
             </span>
           </button>,
           portal
