@@ -4,7 +4,7 @@ import { AppContext } from "./context";
 export const AppEntry = () => {
   return (
     <AppContext>
-      <WalletButtonEntry container="#walletModal" />
+      <WalletButtonEntry container="#walletButton" />
     </AppContext>
   );
 };

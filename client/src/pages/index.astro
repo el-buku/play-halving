@@ -1,6 +1,6 @@
 
 ---
-import {WalletModalButton} from "../context/AppContext.tsx"
+import {AppEntry} from "../AppEntry.tsx"
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -65,9 +65,11 @@ import {WalletModalButton} from "../context/AppContext.tsx"
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script> -->
     <link type="text/css" rel="stylesheet" href="design.css" />
+    <AppEntry client:only/>
   </head>
 
   <body>
+
     <div class="toast-msg">
       <div class="error-message">
         <i class="fas fa-exclamation-circle" style="color: red"></i>
@@ -101,7 +103,7 @@ import {WalletModalButton} from "../context/AppContext.tsx"
               </div>
             </div>
             <!-- <AppContext client:load> -->
-              <WalletModalButton client:only/>
+              <div id="walletButton"/>
             <!-- </AppContext> -->
           </div>
         </div>

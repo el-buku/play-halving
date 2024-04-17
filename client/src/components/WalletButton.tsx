@@ -11,10 +11,10 @@ import { createPortal } from "react-dom";
 import { WalletReadyState, type WalletName } from "@solana/wallet-adapter-base";
 import type { WalletModalProps } from "@solana/wallet-adapter-react-ui";
 import { useWallet, type Wallet } from "@solana/wallet-adapter-react";
+import type { PortalProps } from "../types";
 
-export const WalletButtonEntry: FC<WalletModalProps> = ({
-  container = "#walletModal",
-  className = "",
+export const WalletButtonEntry: FC<PortalProps> = ({
+  container = "#walletButton",
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const {
@@ -29,7 +29,7 @@ export const WalletButtonEntry: FC<WalletModalProps> = ({
   const [expanded, setExpanded] = useState(false);
   const [fadeIn, setFadeIn] = useState(false);
   const [portal, setPortal] = useState<Element | null>(null);
-
+  console.log({ portal });
   const [listedWallets, collapsedWallets] = useMemo(() => {
     const installed: Wallet[] = [];
     const notInstalled: Wallet[] = [];
@@ -57,7 +57,10 @@ export const WalletButtonEntry: FC<WalletModalProps> = ({
     },
     [hideModal]
   );
-
+  useLayoutEffect(
+    () => setPortal(document.querySelector(container)),
+    [container]
+  );
   const handleWalletClick = useCallback(
     (event: any, walletName: WalletName) => {
       console.log({ walletName, event });
@@ -127,10 +130,6 @@ export const WalletButtonEntry: FC<WalletModalProps> = ({
     }
   }, [hideModal, handleTabKey]);
 
-  useLayoutEffect(
-    () => setPortal(document.querySelector(container)),
-    [container]
-  );
   console.log({ visible });
   const addr = connectedWallet?.adapter.publicKey?.toString() || "";
   const [displayText, setDisplayText] = useState(truncateMiddle(addr));
@@ -252,28 +251,32 @@ export const WalletButtonEntry: FC<WalletModalProps> = ({
   );
   return (
     <>
-      <button
-        // disabled={
-        //   buttonState === "connecting" || buttonState === "disconnecting"
-        // }
-        onMouseOver={handleMouseOver}
-        onMouseOut={handleMouseOut}
-        onClick={() => (!connected ? setVisible(!visible) : disconnect())}
-        type="button"
-        className="connect-wallet"
-        style={{ width: 300, justifyContent: "center" }}
-      >
-        {!connected && <img src="img/fi-rr-plug.svg" alt="" />}
-        <span>
-          {!connected && !connecting
-            ? "Connect Wallet"
-            : connected && !connecting
-            ? displayText
-            : connecting
-            ? "Connecting..."
-            : "Connected"}
-        </span>
-      </button>
+      {portal &&
+        createPortal(
+          <button
+            // disabled={
+            //   buttonState === "connecting" || buttonState === "disconnecting"
+            // }
+            onMouseOver={handleMouseOver}
+            onMouseOut={handleMouseOut}
+            onClick={() => (!connected ? setVisible(!visible) : disconnect())}
+            type="button"
+            className="connect-wallet"
+            style={{ width: 300, justifyContent: "center" }}
+          >
+            {!connected && <img src="img/fi-rr-plug.svg" alt="" />}
+            <span>
+              {!connected && !connecting
+                ? "Connect Wallet"
+                : connected && !connecting
+                ? displayText
+                : connecting
+                ? "Connecting..."
+                : "Connected"}
+            </span>
+          </button>,
+          portal
+        )}
       <WalletModal />
     </>
   );
