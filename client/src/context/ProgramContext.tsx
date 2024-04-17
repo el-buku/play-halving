@@ -5,6 +5,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  useContext,
 } from "react";
 import {
   useAnchorWallet,
@@ -32,6 +33,8 @@ import {
   getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
+import pk from "bn.js";
+const BN = pk.BN;
 // import {
 //   InboundTransactionListener,
 //   SubscriptionStreamManager,
@@ -59,7 +62,7 @@ export type TxnSummary = {
   sig: string;
   totalAmountTickets: number;
 };
-
+export const useProgram = () => useContext(ProgramContext);
 const useProgramListeners = () =>
   // : TxnSummary[]
   {
@@ -211,7 +214,7 @@ export const ProgramContextProvider = ({ children }: PropsWithChildren<{}>) => {
       const secondStateAcc = getSecondStateAcc(timestamp, program.programId)[0];
 
       return program.methods
-        .placeBet(new anchor.BN(timestamp))
+        .placeBet(new BN(timestamp))
         .accountsPartial({
           buyer: wallet.publicKey,
           programConfig: programConfigPDA,

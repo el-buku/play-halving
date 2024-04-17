@@ -1,5 +1,13 @@
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import { WalletConnectWalletAdapter } from "@solana/wallet-adapter-wallets";
+import {
+  Coin98WalletAdapter,
+  CoinbaseWalletAdapter,
+  HuobiWalletAdapter,
+  LedgerWalletAdapter,
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+  WalletConnectWalletAdapter,
+} from "@solana/wallet-adapter-wallets";
 import { clusterApiUrl } from "@solana/web3.js";
 
 export const network = WalletAdapterNetwork.Devnet;
@@ -20,6 +28,15 @@ export const wallets = [
     network: network,
     options: {},
   }),
+  new SolflareWalletAdapter({
+    network: network,
+  }),
+  new PhantomWalletAdapter({
+    network: network,
+  }),
+  new CoinbaseWalletAdapter(),
+  new HuobiWalletAdapter(),
+  new Coin98WalletAdapter(),
 ];
 
 // export const API_KEY = "2214b95a-3fb9-4b3e-93ac-f0aceb0935ec";
