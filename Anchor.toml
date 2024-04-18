@@ -4,8 +4,8 @@
 seeds = false
 skip-lint = false
 
-[programs.localnet]
-play_halving = "AwhF2my6A4mmpBBSP2UAWFo4392DY6Vp6TdrP1uFPCvu"
+[programs.devnet]
+play_halving = "3YeRxTdkC4h86P4o9sEbM5vvPVXczGTENnXJLMJQSnqG"
 
 [registry]
 url = "https://api.apr.dev"
@@ -16,7 +16,10 @@ wallet = "./deployment.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
-init-program = "pnpm ts-node client/crank/initProgram.ts"
-pause = "pnpm ts-node client/crank/pause.ts"
-mark-halving = "pnpm ts-node client/crank/markHalving.ts"
-close = "pnpm ts-node client/crank/close.ts"
+init-program = "pnpm ts-node sdk/crank/initProgram.ts"
+pause = "pnpm ts-node sdk/crank/pause.ts"
+mark-halving = "pnpm ts-node sdk/crank/markHalving.ts"
+close = "pnpm ts-node sdk/crank/close.ts"
+
+[test.validator]
+url = "https://api.devnet.solana.com" # This is the url of the cluster that accounts are cloned from (See `test.validator.clone`).

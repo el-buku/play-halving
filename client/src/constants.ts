@@ -2,13 +2,10 @@ import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import {
   Coin98WalletAdapter,
   CoinbaseWalletAdapter,
-  HuobiWalletAdapter,
-  LedgerWalletAdapter,
   PhantomWalletAdapter,
-  SolflareWalletAdapter,
   WalletConnectWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
-import { clusterApiUrl } from "@solana/web3.js";
+import { PublicKey, clusterApiUrl } from "@solana/web3.js";
 
 export const network = WalletAdapterNetwork.Devnet;
 export const wallets = [
@@ -24,18 +21,15 @@ export const wallets = [
    * instantiate its legacy wallet adapter here. Common legacy adapters can be found
    * in the npm package `@solana/wallet-adapter-wallets`.
    */
+
   new WalletConnectWalletAdapter({
-    network: network,
+    network: WalletAdapterNetwork.Devnet,
     options: {},
-  }),
-  new SolflareWalletAdapter({
-    network: network,
   }),
   new PhantomWalletAdapter({
     network: network,
   }),
   new CoinbaseWalletAdapter(),
-  new HuobiWalletAdapter(),
   new Coin98WalletAdapter(),
 ];
 
@@ -45,3 +39,5 @@ export const wallets = [
 // export const SUB_ID = "2214b95a-3fb9-4b3e-93ac-f0aceb0935ec";
 // export const endpoint = RPC_URL;
 export const endpoint = clusterApiUrl(network);
+export const programAddy = "Day32NTyKpwEG5mqzN2MimXr9RLDQMGTarJM2oGdUe6i";
+export const programId = new PublicKey(programAddy);

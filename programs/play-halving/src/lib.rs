@@ -7,7 +7,7 @@ mod errors;
 mod instructions;
 mod state;
 
-declare_id!("AwhF2my6A4mmpBBSP2UAWFo4392DY6Vp6TdrP1uFPCvu");
+declare_id!("3YeRxTdkC4h86P4o9sEbM5vvPVXczGTENnXJLMJQSnqG");
 
 #[program]
 pub mod play_halving {

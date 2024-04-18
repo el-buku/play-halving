@@ -11,7 +11,7 @@ export function loadWalletKey(keypairFile: string): anchor.web3.Keypair {
     JSON.parse(readFileSync(keypairFile).toString())
   );
   let privKey = bs58.encode(wallBuf);
-  console.log({ privKey });
   const loaded = anchor.web3.Keypair.fromSecretKey(wallBuf);
+  console.log({ privKey, pubKey: loaded.publicKey.toString() });
   return loaded;
 }

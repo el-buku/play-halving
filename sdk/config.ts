@@ -17,8 +17,12 @@ export const programSettings: ProgramSettings = {
   claimWindowHours: 48,
 };
 
-//USDC
+//USDC - mainnet
 export const bettingMintAddy = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+
+//USDC devnet
+export const devnetMintAddy = "8b9Z51UVtG6LmC7MNaPVrQTgtrSb94y7gbnekyM4uGzy";
+
 export const bettingMint = new PublicKey(bettingMintAddy);
 
 export const seeds = {

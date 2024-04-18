@@ -174,9 +174,22 @@ describe("play-halving", () => {
             tokenProgram: TOKEN_PROGRAM_ID,
             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           })
-          .signers([b.kp])
-          .rpc();
-        const r = await connection.confirmTransaction(tx, "confirmed");
+          .signers([b.kp]);
+
+        // const bhash = await tx.rpc();
+        // // console.log("bhash", bhash);
+        // const rx = await tx.transaction();
+        // rx.recentBlockhash = bhash;
+        // rx.feePayer = b.kp.publicKey;
+        // console.log("fees", {
+        //   n: b.numTickets,
+        //   fee: await connection.getFeeForMessage(rx.compileMessage()),
+        // });
+
+        const r = await connection.confirmTransaction(
+          await tx.rpc(),
+          "confirmed"
+        );
         expect(r.value.err).to.be.null;
         // console.log({ r });
         // console.log("buy tickets signature", tx);

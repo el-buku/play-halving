@@ -35,6 +35,7 @@ import {
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
 import pk from "bn.js";
+import { programId } from "../constants";
 const BN = pk.BN;
 // import {
 //   InboundTransactionListener,
@@ -52,10 +53,6 @@ type ProgramData = {
   claimTxn: (wallet: AnchorWallet) => () => Promise<anchor.web3.Transaction>;
 };
 const ProgramContext = createContext<ProgramData | undefined>(undefined);
-
-// TODO
-const programAddy = "AwhF2my6A4mmpBBSP2UAWFo4392DY6Vp6TdrP1uFPCvu";
-const programId = new PublicKey(programAddy);
 
 export type TxnSummary = {
   wallet: string;
@@ -163,18 +160,8 @@ const useProgramListener = (
 // );
 // return txnList;
 
-export const ProgramContextProvider = ({ children }: PropsWithChildren<{}>) => {
+const useAnchorProgram = () => {
   const { connection } = useConnection();
-
-  // const wallet = useAnchorWallet();
-  // const [userBetStateInfo, setUserBetStateInfo] = useState();
-  // if (!wallet) {
-  //   return (
-  //     <ProgramContext.Provider value={undefined}>
-  //       {children}
-  //     </ProgramContext.Provider>
-  //   );
-  // } else {
   const anchorProvider = new anchor.AnchorProvider(
     connection,
     //@ts-ignore
@@ -191,8 +178,42 @@ export const ProgramContextProvider = ({ children }: PropsWithChildren<{}>) => {
     programId,
     anchorProvider
   );
-  console.log("erer232");
+  return program;
+};
 
+const useProgramState = () => {
+  const program = useAnchorProgram();
+  const [state, setState] = useState({});
+  useEffect(() => {
+    const fetch = async () => {
+      const programConfigPDA = getProgramConfigPDADef(programId)[0];
+      const programConfig = await program.account.programConfig.fetch(
+        programConfigPDA
+      );
+      console.log({ programConfig });
+
+      setState((s) => ({ ...s, programConfig }));
+    };
+    fetch();
+  }, [program]);
+  return state;
+};
+
+export const ProgramContextProvider = ({ children }: PropsWithChildren<{}>) => {
+  // const wallet = useAnchorWallet();
+  // const [userBetStateInfo, setUserBetStateInfo] = useState();
+  // if (!wallet) {
+  //   return (
+  //     <ProgramContext.Provider value={undefined}>
+  //       {children}
+  //     </ProgramContext.Provider>
+  //   );
+  // } else {
+
+  const program = useAnchorProgram();
+  console.log("erer232");
+  const programState = useProgramState();
+  console.log({ programState });
   const programConfigPDA = getProgramConfigPDADef(programId)[0];
   const programVault = getAssociatedTokenAddressSync(
     bettingMint,
@@ -260,8 +281,6 @@ export const ProgramContextProvider = ({ children }: PropsWithChildren<{}>) => {
       .transaction();
   };
 
-  const programState = program.account;
-  console.log({ programState });
   // const ads = program.account.userBetsState.subscribe(userStateAcc);
   // ads.on("change", (info) => {
   //   console.log({ userStateAccInfo: info });
