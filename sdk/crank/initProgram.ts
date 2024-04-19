@@ -1,11 +1,15 @@
 import { Program } from "@coral-xyz/anchor";
 import { PlayHalving } from "../../target/types/play_halving";
-import { bettingMint, programSettings, bettingMintAddy } from "../config";
+import { programSettings, bettingMintAddy, bettingMint } from "../config";
 import {
   TOKEN_PROGRAM_ID,
   getAssociatedTokenAddressSync,
   getOrCreateAssociatedTokenAccount,
+  mintTo,
+  createInitializeMint2Instruction,
+  createMint,
 } from "@solana/spl-token";
+
 import { getProgramConfigPDADef } from "../PDAs";
 import {
   SystemProgram,
@@ -24,10 +28,20 @@ const run = async () => {
   const program = anchor.workspace.PlayHalving as Program<PlayHalving>;
   // const connection = new Connection("https://api.devnet.solana.com");
   const connection = provider.connection;
+  console.log({ provider, connection });
   console.log({ here: program.programId.toString() });
-  const bettingM = Keypair.generate();
-  if (provider.connection.rpcEndpoint.includes("localhost")) {
-    console.log("Running on devnet...");
+  const betm = Keypair.generate();
+  const bettingMint = await createMint(
+    connection,
+    adminWallet,
+    adminWallet.publicKey,
+    adminWallet.publicKey,
+    2,
+    betm
+  );
+  if (provider.connection.rpcEndpoint.includes("0.0.0.0")) {
+    console.log("Running on localnet...");
+    // console.log("connection", await connection.getLatestBlockhashAndContext());
     await connection.confirmTransaction(
       await provider.connection.requestAirdrop(
         adminWallet.publicKey,
@@ -47,20 +61,30 @@ const run = async () => {
     program.programId
   );
 
-  console.log({
-    [bettingMintAddy]: await connection.getAccountInfo(bettingMint),
-  });
+  // console.log({
+  //   [bettingMintAddy]: await connection.getAccountInfo(bettingMint),
+  // });
   const programVault = getAssociatedTokenAddressSync(
     bettingMint,
     programConfigPDA,
     true
   );
-  // const adminPDA = await getOrCreateAssociatedTokenAccount(
-  //   connection,
-  //   adminWallet,
-  //   bettingMint,
-  //   adminWallet.publicKey
-  // );
+  const adminATAInfo = await getOrCreateAssociatedTokenAccount(
+    connection,
+    adminWallet,
+    bettingMint,
+    adminWallet.publicKey
+  );
+  const mintTxId = await mintTo(
+    connection,
+    adminWallet,
+    bettingMint,
+    adminATAInfo.address,
+    adminWallet,
+    100000
+  );
+  const res = await connection.confirmTransaction(mintTxId, "confirmed");
+  console.log({ res });
   // console.log({ adminPDA });
   // const slo = await getOrCreateAssociatedTokenAccount(
   //   connection,
@@ -68,7 +92,7 @@ const run = async () => {
   //   bettingMint,
   //   adminWallet.publicKey
   // );
-  const adminPDA = await getAssociatedTokenAddressSync(
+  const adminATA = await getAssociatedTokenAddressSync(
     bettingMint,
     adminWallet.publicKey
   );
@@ -78,10 +102,10 @@ const run = async () => {
   //   bettingMint,
   //   adminWallet.publicKey
   // );
-  console.log({ adminPDA });
-  const adminTknAc = await connection.getTokenAccountBalance(adminPDA);
+  console.log({ adminPDA: adminATA });
+  const adminTknAc = await connection.getTokenAccountBalance(adminATA);
   console.log({ adminTknAc });
-  if (0 === 0) {
+  if (adminTknAc.value.uiAmount === 0) {
     throw new Error("Admin PDA has no tokens");
   }
   const tx = await program.methods

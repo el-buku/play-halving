@@ -22,4 +22,4 @@ mark-halving = "pnpm ts-node sdk/crank/markHalving.ts"
 close = "pnpm ts-node sdk/crank/close.ts"
 
 [test.validator]
-url = "https://api.devnet.solana.com" # This is the url of the cluster that accounts are cloned from (See `test.validator.clone`).
+url = "http://localhost:8899" # This is the url of the cluster that accounts are cloned from (See `test.validator.clone`).
