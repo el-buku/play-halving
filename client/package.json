@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build",
+    "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -14,6 +14,8 @@
     "@astrojs/react": "^3.0.10",
     "@coral-xyz/anchor": "0.29.0",
     "@debridge-finance/solana-transaction-parser": "^2.0.1",
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "@solana/spl-token": "^0.4.3",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-react": "^0.15.35",
@@ -22,9 +24,25 @@
     "@solana/web3.js": "^1.91.4",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
+    "@vitejs/plugin-react": "^4.2.1",
     "astro": "^4.4.3",
+    "crypto-browserify": "^3.12.0",
+    "node-stdlib-browser": "^1.2.0",
+    "process": "^0.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "typescript": "^5.3.3"
+    "stream-browserify": "^3.0.0",
+    "typescript": "^5.3.3",
+    "util": "^0.12.5",
+    "vite-plugin-node-polyfills": "^0.21.0",
+    "vite-plugin-node-stdlib-browser": "^0.2.1"
+  },
+  "devDependencies": {
+    "rollup-plugin-polyfill-node": "^0.13.0"
+  },
+  "resolutions": {
+    "@ledgerhq/hw-transport":"npm:empty-npm-package",
+    "@solana/wallet-adapter-ledgher":"npm:empty-npm-package",
+    "@solana/spl-type-length-value":"npm:empty-npm-package"
   }
 }

@@ -24,7 +24,7 @@ yarn.lock
 /.pnp
 .pnp.js
 .yarn/install-state.gz
-
+**/dist
 # testing
 /coverage
 
