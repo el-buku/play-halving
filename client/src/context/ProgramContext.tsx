@@ -26,7 +26,7 @@ import {
   getProgramConfigPDADef,
   getSecondStateAcc,
   getUserStateAcc,
-} from "../../../sdk/PDAs";
+} from "../sdk/PDAs";
 // import { type PlayHalving } from "../../../target/types/play_halving";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
