@@ -31,6 +31,7 @@
     "process": "^0.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "rollup-plugin-node-polyfills": "^0.2.1",
     "stream-browserify": "^3.0.0",
     "typescript": "^5.3.3",
     "util": "^0.12.5",
@@ -41,8 +42,8 @@
     "rollup-plugin-polyfill-node": "^0.13.0"
   },
   "resolutions": {
-    "@ledgerhq/hw-transport":"npm:empty-npm-package",
-    "@solana/wallet-adapter-ledgher":"npm:empty-npm-package",
-    "@solana/spl-type-length-value":"npm:empty-npm-package"
+    "@ledgerhq/hw-transport": "npm:empty-npm-package",
+    "@solana/wallet-adapter-ledgher": "npm:empty-npm-package",
+    "@solana/spl-type-length-value": "npm:empty-npm-package"
   }
 }
