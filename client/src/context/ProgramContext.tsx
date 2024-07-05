@@ -14,13 +14,13 @@ import {
   type AnchorWallet,
 } from "@solana/wallet-adapter-react";
 import * as anchor from "@coral-xyz/anchor";
-import { IDL, type PlayHalving } from "../../../target/types/play_halving";
+import { IDL, type PlayHalving } from "../target/types/play_halving";
 import {
   // ConfirmedSignatureInfo,
   PublicKey,
   SystemProgram,
 } from "@solana/web3.js";
-import { bettingMint, bettingMintAddy } from "../../../sdk/config";
+import { bettingMint, bettingMintAddy } from "../sdk/config";
 import { SolanaParser } from "@debridge-finance/solana-transaction-parser";
 import {
   getProgramConfigPDADef,
