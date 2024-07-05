@@ -34,9 +34,9 @@ import {
   getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
-import pk from "bn.js";
+import { BN } from "bn.js";
 import { programId } from "../constants";
-const BN = pk.BN;
+// const BN = pk.BN;
 // import {
 //   InboundTransactionListener,
 //   SubscriptionStreamManager,
