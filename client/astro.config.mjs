@@ -30,6 +30,7 @@ export default defineConfig({
     target: "esnext",
     rollupOptions: {
       plugins: [nodePolyfills({ crypto: true })],
+      external: ["bn.js"],
     },
   },
   optimizeDeps: {
