@@ -29,7 +29,7 @@ export default defineConfig({
   build: {
     target: "esnext",
     rollupOptions: {
-      plugins: [nodePolyfills({ crypto: true })],
+      plugins: [nodePolyfills({ crypto: true, stream: true })],
       external: ["bn.js"],
     },
   },
