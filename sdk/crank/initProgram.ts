@@ -1,5 +1,5 @@
 import { Program } from "@coral-xyz/anchor";
-import { PlayHalving } from "../../target/types/play_halving";
+import { type PlayHalving } from "../../target/types/play_halving";
 import { programSettings, bettingMintAddy, bettingMint } from "../config";
 import {
   TOKEN_PROGRAM_ID,

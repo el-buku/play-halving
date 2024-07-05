@@ -2,7 +2,7 @@
     "scripts": {
         "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
         "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check",
-        "prep:client": "cp -r ./sdk ./client/src/sdk"
+        "prep:client": "rm -rf ./client/src/sdk ./client/src/target/types && mkdir -p ./client/src/sdk ./client/src/target/types && cp -r ./sdk/* ./client/src/sdk && cp -r ./target/types/* ./client/src/target/types"
     },
     "dependencies": {
         "@coral-xyz/anchor": "0.29.0",
