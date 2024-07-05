@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@ledgerhq/hw-transport': npm:empty-npm-package
+  '@solana/wallet-adapter-ledgher': npm:empty-npm-package
+  '@solana/spl-type-length-value': npm:empty-npm-package
+
 dependencies:
   '@astrojs/check':
     specifier: ^0.5.5
@@ -3101,16 +3106,8 @@ packages:
     dependencies:
       '@ledgerhq/devices': 6.27.1
       '@ledgerhq/errors': 6.16.3
-      '@ledgerhq/hw-transport': 6.27.1
+      '@ledgerhq/hw-transport': /empty-npm-package@1.0.0
       '@ledgerhq/logs': 6.12.0
-    dev: false
-
-  /@ledgerhq/hw-transport@6.27.1:
-    resolution: {integrity: sha512-hnE4/Fq1YzQI4PA1W0H8tCkI99R3UWDb3pJeZd6/Xs4Qw/q1uiQO+vNLC6KIPPhK0IajUfuI/P2jk0qWcMsuAQ==}
-    dependencies:
-      '@ledgerhq/devices': 6.27.1
-      '@ledgerhq/errors': 6.16.3
-      events: 3.3.0
     dev: false
 
   /@ledgerhq/logs@6.12.0:
@@ -4225,7 +4222,7 @@ packages:
       '@solana/web3.js': ^1.91.1
     dependencies:
       '@solana/codecs': 2.0.0-preview.2(fastestsmallesttextencoderdecoder@1.0.22)
-      '@solana/spl-type-length-value': 0.1.0
+      '@solana/spl-type-length-value': /empty-npm-package@1.0.0
       '@solana/web3.js': 1.91.4
     transitivePeerDependencies:
       - fastestsmallesttextencoderdecoder
@@ -4242,7 +4239,7 @@ packages:
       '@solana/codecs-numbers': 2.0.0-experimental.8618508
       '@solana/codecs-strings': 2.0.0-experimental.8618508(fastestsmallesttextencoderdecoder@1.0.22)
       '@solana/options': 2.0.0-experimental.8618508
-      '@solana/spl-type-length-value': 0.1.0
+      '@solana/spl-type-length-value': /empty-npm-package@1.0.0
       '@solana/web3.js': 1.91.4
     transitivePeerDependencies:
       - fastestsmallesttextencoderdecoder
@@ -4283,13 +4280,6 @@ packages:
       - encoding
       - fastestsmallesttextencoderdecoder
       - utf-8-validate
-    dev: false
-
-  /@solana/spl-type-length-value@0.1.0:
-    resolution: {integrity: sha512-JBMGB0oR4lPttOZ5XiUGyvylwLQjt1CPJa6qQ5oM+MBCndfjz2TKKkw0eATlLLcYmq1jBVsNlJ2cD6ns2GR7lA==}
-    engines: {node: '>=16'}
-    dependencies:
-      buffer: 6.0.3
     dev: false
 
   /@solana/wallet-adapter-alpha@0.1.10(@solana/web3.js@1.91.4):
@@ -4467,7 +4457,7 @@ packages:
       '@solana/web3.js': ^1.77.3
     dependencies:
       '@ledgerhq/devices': 6.27.1
-      '@ledgerhq/hw-transport': 6.27.1
+      '@ledgerhq/hw-transport': /empty-npm-package@1.0.0
       '@ledgerhq/hw-transport-webhid': 6.27.1
       '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.91.4)
       '@solana/web3.js': 1.91.4
@@ -8075,6 +8065,10 @@ packages:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
     dev: false
 
+  /empty-npm-package@1.0.0:
+    resolution: {integrity: sha512-q4Mq/+XO7UNDdMiPpR/LIBIW1Zl4V0Z6UT9aKGqIAnBCtCb3lvZJM1KbDbdzdC8fKflwflModfjR29Nt0EpcwA==}
+    dev: false
+
   /encodeurl@1.0.2:
     resolution: {integrity: sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==}
     engines: {node: '>= 0.8'}
@@ -8973,6 +8967,7 @@ packages:
 
   /glob@6.0.4:
     resolution: {integrity: sha512-MKZeRNyYZAVVVG1oZeLaWie1uweH40m9AZwIwxyPbTSX4hHrVYSzLg0Ro5Z5R7XKkIX+Cc6oD1rqeDJnwsB8/A==}
+    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       inflight: 1.0.6
       inherits: 2.0.4
@@ -8995,6 +8990,7 @@ packages:
 
   /glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
+    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -11687,6 +11683,7 @@ packages:
 
   /osenv@0.1.5:
     resolution: {integrity: sha512-0CWcCECdMVc2Rw3U5w9ZjqX6ga6ubk1xDVKxtBQPK7wis/0F2r9T6k4ydGYhecl7YUBxBVxhL5oisPsNxAPe2g==}
+    deprecated: This package is no longer supported.
     dependencies:
       os-homedir: 1.0.2
       os-tmpdir: 1.0.2
@@ -12761,6 +12758,7 @@ packages:
 
   /rimraf@2.4.5:
     resolution: {integrity: sha512-J5xnxTyqaiw06JjMftq7L9ouA448dw/E7dKghkP9WpKNuwmARNNg+Gk8/u5ryb9N/Yo2+z3MCwuqFK/+qPOPfQ==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 6.0.4
@@ -12769,6 +12767,7 @@ packages:
 
   /rimraf@2.6.3:
     resolution: {integrity: sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3
@@ -12776,6 +12775,7 @@ packages:
 
   /rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3

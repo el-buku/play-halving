@@ -3,10 +3,17 @@ import { BN, Program } from "@coral-xyz/anchor";
 import { PlayHalving } from "../target/types/play_halving";
 
 import { join } from "path";
-import { Keypair, SystemProgram, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import {
+  Keypair,
+  SystemProgram,
+  LAMPORTS_PER_SOL,
+  Transaction,
+} from "@solana/web3.js";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
+  AuthorityType,
   createMint,
+  createSetAuthorityInstruction,
   getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
   getOrCreateAssociatedTokenAccount,
@@ -89,6 +96,25 @@ describe("play-halving", () => {
       })
     );
   });
+  const revokeMintTransaction = new Transaction();
+  revokeMintTransaction.add(
+    createSetAuthorityInstruction(
+      mintPubkey, // mint acocunt || token account
+      alice.publicKey, // current auth
+      AuthorityType.MintTokens, // authority type
+      randomGuy.publicKey, // new auth (you can pass `null` to close it)
+      [],
+      TOKEN_PROGRAM_ID
+    )
+  );
+
+  const revokeMintTx = await sendTransaction(
+    revokeMintTransaction,
+    connection,
+    {
+      signers: [mintKeypair],
+    }
+  );
 
   // const subscriptionId = program.addEventListener("ClaimEvent", (event) => {
   //   console.log("ClaimEvent", event);
